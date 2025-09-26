@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BusTrackr Dashboard</title>
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard.css' %}">
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>BusTrackr</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="{% url 'dashboard' %}">Home</a></li>
+          <li><a href="#">My Trips</a></li>
+          <li><a href="#">Bus Info</a></li>
+        
+        </ul>
+      </nav>
+    </aside>
+    <div class="main-content">
+      <header class="topbar">
+        <div class="welcome-msg">Welcome, {{ user.username }}</div>
+      </header>
+      <section class="content">
+        <div class="card">
+          <h3>Upcoming Trip</h3>
+          <p>No upcoming trips</p>
+        </div>
+        <div class="card">
+          <h3>Account Info</h3>
+          <p>Email: {{ user.email }}</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
