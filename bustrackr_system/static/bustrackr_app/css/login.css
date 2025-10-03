@@ -1,0 +1,70 @@
+/* Left Panel */
+.left-panel {
+  background: #1e3a8a; /* Tailwind blue-900 */
+  color: white;
+}
+
+/* Role Cards */
+.role-card {
+  background: white;
+  color: #1e3a8a;
+  font-weight: 600;
+  padding: 20px 30px;
+  border-radius: 12px;
+  width: 120px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.role-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Login Box */
+.login-box {
+  transition: all 0.3s ease;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form input {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-form input:focus {
+  border-color: #2563eb;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Submit Button */
+.submit-btn {
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+/* Animations */
+.hidden-slide {
+  display: none;
+}
+
+.show-slide {
+  display: flex;
+  flex-direction: column;
+}

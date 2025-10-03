@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BusTrackr Cebu</title>
-  <!-- Tailwind CSS CDN -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
@@ -12,24 +12,12 @@
 <body class="bg-blue-400 text-gray-900 flex flex-col min-h-screen">
 
   <!-- ================= HEADER ================= -->
-  <header class="bg-blue-900 text-white shadow-md">
-    <div class="container mx-auto flex items-center justify-between px-6 py-4">
-      <!-- Logo + Brand -->
-      <div class="flex items-center space-x-3">
-        <div class="bg-white text-blue-900 font-bold rounded-full w-10 h-10 flex items-center justify-center">logo</div>
-        <h1 class="text-xl font-semibold">BusTrackr Cebu</h1>
-      </div>
-    </div>
-  </header>
+ {% include 'components/header.html' %}
+ 
 
   <!-- ================= NAVIGATION BAR ================= -->
-  <nav class="bg-blue-800">
-    <ul class="flex space-x-6 container mx-auto px-6 py-3">
-      <li><a href="#" class="text-white hover:text-yellow-300 transition">Home</a></li>
-      <!-- Add more links -->
-    </ul>
-  </nav>
-
+  
+   {% include 'components/navigation.html' %}
   <!-- ================= BODY ================= -->
   <main class="flex-grow">
 
@@ -125,14 +113,7 @@
   </main>
 
   <!-- ================= FOOTER ================= -->
-  <footer class="bg-blue-900 text-white mt-12">
-    <div class="container mx-auto flex items-center justify-between px-6 py-4">
-      <div class="text-sm">© 2025 BusTrackr Cebu. All rights reserved.</div>
-      <div>
-        <a href="#" class="bg-yellow-400 text-blue-900 font-medium px-4 py-2 rounded-md hover:bg-yellow-300 transition">Staff Login</a>
-      </div>
-    </div>
-  </footer>
+  {% include 'components/footer.html' %}
 
 </body>
 </html>
