@@ -1,8 +1,11 @@
 <footer class="bg-blue-900 text-white mt-12">
-    <div class="container mx-auto flex items-center justify-between px-6 py-4">
-      <div class="text-sm">© 2025 BusTrackr Cebu. All rights reserved.</div>
-      <div>
-        <a href="#" class="bg-yellow-400 text-blue-900 font-medium px-4 py-2 rounded-md hover:bg-yellow-300 transition">Staff Login</a>
-      </div>
+  <div class="container mx-auto flex items-center justify-between px-6 py-4">
+    <div class="text-sm">© 2025 BusTrackr Cebu. All rights reserved.</div>
+    <div>
+      <a href="{% url 'staff_login' %}" 
+         class="bg-yellow-400 text-blue-900 font-medium px-4 py-2 rounded-md hover:bg-yellow-300 transition">
+        Staff Login
+      </a>
     </div>
-  </footer>
+  </div>
+</footer>
