@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'bustrackr_system.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("postgresql://postgres:[bustrackr]@db.ugttejdzuuuwxegprhgc.supabase.co:5432/postgres"),
+        default=os.getenv("DATABASE_URL"),
         conn_max_age=600,  # persistent connections
         ssl_require=True   # enforce SSL
     )
