@@ -1,80 +1,175 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BusrTackr Cebu</title>
+  <title>BusTrackr Cebu - Staff Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <link rel="stylesheet" href="{% static 'bustrackr_app/css/input.css' %}">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      height: 100vh;
+      background-color: #0a2e73;
+      color: #fff;
+      padding-top: 20px;
+      position: fixed;
+      width: 240px;
+    }
+    .sidebar .nav-link {
+      color: #d9e1f2;
+      font-weight: 500;
+      margin: 8px 0;
+      border-radius: 10px;
+    }
+    .sidebar .nav-link.active,
+    .sidebar .nav-link:hover {
+      background-color: #173f8a;
+      color: #fff;
+    }
+    .sidebar .logout {
+      position: absolute;
+      bottom: 20px;
+      width: 90%;
+      left: 5%;
+      background-color: #1b1f2f;
+      border-radius: 10px;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      text-decoration: none;
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+    .top-bar {
+      background-color: #1b3fa1;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .card-stat {
+      background-color: #19aef0;
+      color: #fff;
+      border-radius: 20px;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .card-stat h3 {
+      font-size: 2rem;
+      margin: 0;
+    }
+    .bus-table th {
+      background-color: #173f8a;
+      color: #fff;
+    }
+    .bus-table {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
 
-  {% include 'components/header.html' %}
-  {% include 'components/navigation.html' %}
+  <!-- Sidebar -->
+  <div class="sidebar d-flex flex-column">
+    <h4 class="text-center mb-2">BusTrackr Cebu</h4>
+    <small class="text-center text-light mb-4">Staff Dashboard</small>
+    
+    <nav class="nav flex-column px-3">
+      <a href="{% url 'staff_dashboard' %}" class="nav-link {% if request.path == '/staff_dashboard/' %}active{% endif %}">
+        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+      </a>
+      <a href="{% url 'schedule_management' %}" class="nav-link {% if request.path == '/schedule-management/' %}active{% endif %}">
+        <i class="bi bi-calendar-check me-2"></i>Schedule Management
+      </a>
+      <a href="{% url 'seat_availability' %}" class="nav-link {% if request.path == '/seat-availability/' %}active{% endif %}">
+        <i class="bi bi-people me-2"></i>Seat Availability
+      </a>
+      <a href="{% url 'bus_overview' %}" class="nav-link {% if request.path == '/bus-overview/' %}active{% endif %}">
+        <i class="bi bi-bus-front me-2"></i>Bus Overview
+      </a>
+      <a href="{% url 'reports' %}" class="nav-link {% if request.path == '/reports/' %}active{% endif %}">
+        <i class="bi bi-file-earmark-bar-graph me-2"></i>Reports
+      </a>
+    </nav>
 
-  <main>
+    <a href="#" class="logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+  </div>
 
-    <section class="hero-section">
-      <h2>Real-Time Bus Your Fingertips</h2>
-      <p>
-        Stay updated with live bus schedules, seat availability, and departure times for a smoother travel experience in Cebu.
-      </p>
-      <ul>
-        <li>Lve bus schedules and arrival times</li>
-        <li>Real-time seat availability</li>
-        <li>Instant departure notifications</li>
-        <li>Terminal staff dashboard</li>
-        <li>Mobile-friendly interface</li>
-      </ul>
-    </section>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-bar mb-4">
+      Cebu South Bus Terminal ▼
+    </div>
 
-    <section class="container mx-auto px-6">
-      <div class="container-white">
-        <div>
-          <h3>Find Your Bus</h3>
-          <div class="flex space-x-2 mb-4">
-            <input type="text" placeholder="Search..." class="search-input">
-            <button class="search-button">Filter</button>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <select class="search-input"><option>All Terminal</option></select>
-            <select class="search-input"><option>All Routes</option></select>
-            <select class="search-input"><option>All Departure</option></select>
-            <select class="search-input"><option>All Status</option></select>
-          </div>
-          <div class="flex justify-end space-x-3">
-            <button class="clear-button">Clear All</button>
-            <button class="apply-button">Apply Filters</button>
-          </div>
+    <!-- Dynamic Content Area -->
+    {% block content %}
+    <h4 class="mb-4">Dashboard Overview</h4>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card-stat">
+          <p>Active Buses</p>
+          <h3>24</h3>
         </div>
-
-        <div class="mt-8">
-          <h3>Bus Schedule</h3>
-          <div class="schedule-card border-l-4 border-green-500">
-            <div><h4>Cebu to Bohol</h4><p>Departure: 3:20PM<br>Est. Arrival: 5:00PM</p></div>
-            <span class="on-time">On-Time</span>
-          </div>
-          <div class="schedule-card border-l-4 border-yellow-500">
-            <div><h4>Cebu to Oslob</h4><p>Departure: 3:20PM<br>Est. Arrival: 5:20PM</p></div>
-            <span class="boarding">Boarding Now</span>
-          </div>
-          <div class="schedule-card border-l-4 border-orange-500">
-            <div><h4>Cebu to Dumaguete</h4><p>Departure: 3:20PM<br>Est. Arrival: 7:00PM</p></div>
-            <span class="delayed">Delayed</span>
-          </div>
-          <div class="schedule-card border-l-4 border-red-500">
-            <div><h4>Cebu to Dumaguete</h4><p>Departure: 3:20PM<br>Est. Arrival: 7:00PM</p></div>
-            <span class="cancelled">Cancelled</span>
-          </div>
-        </div>
-
       </div>
-    </section>
+      <div class="col-md-3">
+        <div class="card-stat">
+          <p>Delays</p>
+          <h3>24</h3>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card-stat">
+          <p>Passengers Today</p>
+          <h3>24</h3>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card-stat">
+          <p>Completed Trips</p>
+          <h3>24</h3>
+        </div>
+      </div>
+    </div>
 
-  </main>
+    <!-- Table -->
+    <div class="card p-3 bus-table">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Bus Schedule</h5>
+        <div>
+          <button class="btn btn-light btn-sm me-2">Today</button>
+          <button class="btn btn-light btn-sm">Filter</button>
+        </div>
+      </div>
 
-  
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr>
+            <th>Plate No.</th>
+            <th>Destination</th>
+            <th>Departure</th>
+            <th>Status</th>
+            <th>Seats</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" class="text-center text-muted">No data available</td></tr>
+        </tbody>
+      </table>
+    </div>
+    {% endblock %}
+  </div>
 
 </body>
 </html>
