@@ -40,8 +40,22 @@ def home(request):
 def staff_dashboard_view(request):
     return render(request, 'bustrackr_app/staff_dashboard.html')
 
+def schedule_management(request):
+    return render(request, 'bustrackr_app/staff_dashboard_schedule.html')
+
 def operator_dashboard_view(request):
     return render(request, 'bustrackr_app/operator_dashboard.html')
 
 def admin_dashboard_view(request):
     return render(request, 'bustrackr_app/admin_dashboard.html')
+
+from django.shortcuts import render
+
+def seat_availability(request):
+    return render(request, 'bustrackr_app/seat_availability.html')
+
+def bus_overview(request):
+    return render(request, 'bustrackr_app/bus_overview.html')
+
+def reports(request):
+    return render(request, 'bustrackr_app/reports.html')
