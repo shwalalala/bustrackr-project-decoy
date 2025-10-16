@@ -27,12 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'django-insecure-$l@gzlwmwl5gl_13mo#x6rqb4j+t$-*gf)ywq%ly)zgp@@(gz='
-SECRET_KEY = os.environ.get("SECRET_KEY", "fallback_secret_key")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = os.environ.get("DEBUG", "True") == "True"
-
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -89,12 +87,14 @@ WSGI_APPLICATION = 'bustrackr_system.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("postgresql://postgres:[bustrackr]@db.ugttejdzuuuwxegprhgc.supabase.co:5432/postgres"),
+    "default": dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
         conn_max_age=600,  # persistent connections
-        ssl_require=True   # enforce SSL
+        ssl_require=True   # ensures psycopg2 uses SSL
     )
 }
+
+DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
 
 # Password validation
