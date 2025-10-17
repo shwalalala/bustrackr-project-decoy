@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:css": "tailwindcss -i ./static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --watch",
-    "build:css": "tailwindcss -i ./static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --minify"
-},
+    "dev:css": "tailwindcss -i ./bustrackr_system/static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --watch",
+    "build:css": "tailwindcss -i ./bustrackr_system/static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --minify",
+    "watch:css": "tailwindcss -i ./bustrackr_system/static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --watch"
+  },
   
   "repository": {
     "type": "git",
