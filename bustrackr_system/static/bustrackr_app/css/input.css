@@ -1,12 +1,10 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 body {
   background: linear-gradient(to right, #1e3a8a, #3b82f6);
 }
 
-/*login form */
+/* Container for the login form */
 .form-container {
   width: 400px;
   max-width: 90%;
@@ -319,3 +317,4 @@ body {
     margin-bottom: 0;
   }
 }
+

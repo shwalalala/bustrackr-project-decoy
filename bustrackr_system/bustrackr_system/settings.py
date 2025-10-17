@@ -87,8 +87,8 @@ WSGI_APPLICATION = 'bustrackr_system.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("postgresql://postgres:[bustrackr]@db.ugttejdzuuuwxegprhgc.supabase.co:5432/postgres"),
+    "default": dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
         conn_max_age=600,  # persistent connections
         ssl_require=True   # ensures psycopg2 uses SSL
     )
