@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-body {
-  background: linear-gradient(to right, #1e3a8a, #3b82f6);
-}
 
 /* Container for the login form */
 .form-container {

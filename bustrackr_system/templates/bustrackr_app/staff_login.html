@@ -1,10 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <title>BusTrackr Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -68,26 +72,40 @@
         </h2>
         <h1 class="text-3xl font-bold mb-6">Sign in</h1>
 
-        <!-- Dynamic Input -->
-        <div class="mb-4">
-          <label id="usernameLabel" class="block text-gray-700 mb-1">Staff ID</label>
-          <input id="usernameInput" type="text" placeholder="Admin ID"
-            class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
-        </div>
+        <!-- Login Form -->
+        <form method="POST" action="{% url 'staff_login' %}">
+          {% csrf_token %}
 
-        <!-- Password -->
-        <div class="mb-4">
-          <label class="block text-gray-700 mb-1">Enter your Password</label>
-          <input type="password" placeholder="Password"
-            class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
-          <p class="text-sm text-right mt-1 text-blue-500 cursor-pointer">Forgot Password?</p>
-        </div>
+          <!-- Dynamic Input -->
+          <div class="mb-4">
+            <label id="usernameLabel" class="block text-gray-700 mb-1">Staff ID</label>
+            <input id="usernameInput" name="username" type="text" placeholder="Admin ID"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
+          </div>
 
-        <!-- Sign In Button -->
-        <button id="loginBtn" class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
-          Sign in as Admin
-        </button>
-        
+          <!-- Password -->
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-1">Enter your Password</label>
+            <input name="password" type="password" placeholder="Password"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
+            <p class="text-sm text-right mt-1 text-blue-500 cursor-pointer">Forgot Password?</p>
+          </div>
+
+          {% if messages %}
+            <div class="mb-4">
+              {% for message in messages %}
+                <p class="text-red-600 text-sm">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Sign In Button -->
+          <button id="loginBtn" type="submit"
+            class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
+            Sign in as Staff
+          </button>
+          <input type="hidden" id="selectedRole" name="role" value="Staff">
+        </form>
       </div>
     </div>
   </div>
@@ -100,8 +118,7 @@
   const usernameLabel = document.getElementById("usernameLabel");
   const usernameInput = document.getElementById("usernameInput");
   const loginBtn = document.getElementById("loginBtn");
-
-  let selectedRole = "Admin"; // Default role
+  const selectedRoleInput = document.getElementById("selectedRole");
 
   function resetCards() {
     [adminCard, operatorCard, staffCard].forEach(c => c.classList.remove("ring-4", "ring-yellow-400"));
@@ -113,7 +130,7 @@
     usernameLabel.innerText = "Admin ID";
     usernameInput.placeholder = "Admin ID";
     loginBtn.innerText = "Sign in as Admin";
-    selectedRole = "Admin";
+    selectedRoleInput.value = "Admin";
   });
 
   operatorCard.addEventListener("click", () => {
@@ -122,7 +139,7 @@
     usernameLabel.innerText = "Operator ID";
     usernameInput.placeholder = "Operator ID";
     loginBtn.innerText = "Sign in as Operator";
-    selectedRole = "Operator";
+    selectedRoleInput.value = "Operator";
   });
 
   staffCard.addEventListener("click", () => {
@@ -131,19 +148,9 @@
     usernameLabel.innerText = "Staff ID";
     usernameInput.placeholder = "Staff ID";
     loginBtn.innerText = "Sign in as Staff";
-    selectedRole = "Staff";
+    selectedRoleInput.value = "Staff";
   });
-
-  // ✅ Redirect to Django route
-  loginBtn.addEventListener("click", () => {
-    if (selectedRole === "Staff") {
-      window.location.href = "/dashboard/";  // Django URL pattern
-    } else {
-      alert("Only staff login is available right now.");
-    }
-  });
-</script>
-
+  </script>
 
 </body>
 </html>
