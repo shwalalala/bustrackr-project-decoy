@@ -1,6 +1,16 @@
-<nav class="bg-blue-800">
-    <ul class="flex space-x-6 container mx-auto px-6 py-3">
-      <li><a href="#" class="text-white hover:text-yellow-300 transition">Home</a></li>
-     
+
+{% load static %}
+
+<nav class="absolute left-0 w-full z-50 bg-transparent text-white mt-16">
+  <div class="container mx-auto flex items-center justify-between px-8 py-6">
+    <div class="flex items-center space-x-3">
+      <img src="{% static 'bustrackr_app/images/logo1.png' %}" alt="BusTrackr Logo" class="h-8 w-8 object-contain">
+      
+    </div>
+    <ul class="flex space-x-10 text-base font-medium">
+      <li><a href="#" class="hover:text-blue-400 transition-colors duration-300">Home</a></li>
+      <li><a href="#" class="hover:text-blue-400 transition-colors duration-300">About</a></li>
+      <li><a href="#" class="hover:text-blue-400 transition-colors duration-300">Contact Us</a></li>
     </ul>
-  </nav>
+  </div>
+</nav>
