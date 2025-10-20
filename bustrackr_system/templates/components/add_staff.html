@@ -1,43 +1,33 @@
-{% load static %}
-
 <!-- Add Staff Modal -->
-<div id="add_staff" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative">
-
-    <!-- Close Button -->
-    <button type="button" onclick="toggleAddStaffModal(false)" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
-      ✕
-    </button>
-
-    <h2 class="text-2xl font-bold text-blue-600 mb-4">Add New Staff</h2>
-
-    <form method="POST" action="{% url 'add_staff' %}" class="space-y-4">
-      {% csrf_token %}
-
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Name</label>
-        <input type="text" name="name" required
-          class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
+<div class="modal fade" id="add_staff" tabindex="-1" aria-labelledby="addStaffLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addStaffLabel">Add New Staff</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Password</label>
-        <input type="password" name="password" required
-          class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
+      <div class="modal-body">
+        <!-- Add Staff Form -->
+        <form method="POST" action="{% url 'add_staff' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="staffName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="staffName" name="name" placeholder="Enter staff name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="staffPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="staffPassword" name="password" placeholder="Enter password" required>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Staff</button>
+          </div>
+        </form>
       </div>
 
-      <div class="pt-2 flex justify-end space-x-2">
-        <button type="button" onclick="toggleAddStaffModal(false)"
-          class="px-4 py-2 rounded-lg border text-gray-700 hover:bg-gray-100">
-          Cancel
-        </button>
-        <button type="submit"
-          class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700">
-          Add Staff
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
-
-
