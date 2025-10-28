@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from .supabase_client import supabase
 from .models import StaffAccount, AdminAccount
 from django.contrib.auth.decorators import login_required
 
@@ -74,8 +75,34 @@ def add_staff_view(request):
 
         staff_id = new_staff.staff_id
         messages.success(request, f'Staff "{name}" added successfully! Staff ID: {staff_id}')
-        return redirect('admin_dashboard')
-    return redirect('admin_dashboard')
+        return redirect('user_management')
+    return redirect('user_management')
+
+def edit_staff_view(request, staff_id):
+    staff = get_object_or_404(StaffAccount, pk=staff_id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+
+        staff.name = name
+        staff.password = password
+        staff.save()
+
+        response = supabase.table("StaffAccount").update({
+            "name": name,
+            "password": password
+        }).eq("staff_id", staff_id).execute()
+
+        if response.data:
+            messages.success(request, f'Staff "{name}" updated successfully (Synced with Supabase)!')
+        else:
+            messages.warning(request, f'Staff updated locally but failed to sync with Supabase.')
+
+        return redirect('user_management')
+
+    context = {'staff': staff}
+    return render(request, 'edit_staff.html', context)
 
 
 #OTHER EXISTING PAGES
@@ -100,25 +127,18 @@ def reports(request):
     return render(request, 'bustrackr_app/staff_dashboard_reports.html')
 
 def user_management(request):
-    if not request.session.get('is_admin'):
+     if not request.session.get('is_admin'):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/admin_user_management.html')
+     response = supabase.table("bustrackr_app_staffaccount").select("*").execute()
+     staff_list = response.data  # Supabase returns a list of dicts
+
+     return render(request, "bustrackr_app/admin_user_management.html", {"staff_list": staff_list})
+    
 
 def bus_management(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
     return render(request, 'bustrackr_app/admin_bus_schedule.html')
-
-
-# MGA RANGE SA SEATS KWAA LNG NI KUNG DI NI MAO ANG ANO INYO NA ENVISION SA SEAT AVAILABILITY
-def seat_availability_view(request):
-    seats = range(1, 21)  
-    return render(request, 'staff_dashboard_seat_availability.html', {'seats': seats})
-
-
-
-
-
 
 # STAFF DASHBOARD PROTECTED ROUTE
 @login_required(login_url='staff_login')

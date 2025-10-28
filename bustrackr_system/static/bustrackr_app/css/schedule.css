@@ -1,19 +1,4 @@
-.top-bar {
-      background-color: #1b3fa1;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-weight: 500;
-    }
-    .bus-table th {
-      background-color: #173f8a;
-      color: #fff;
-    }
-    .bus-table {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-    }
+
     .status-badge {
       border-radius: 8px;
       padding: 4px 10px;
