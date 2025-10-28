@@ -4,18 +4,18 @@ from django.contrib import messages
 from .models import StaffAccount, AdminAccount
 from django.contrib.auth.decorators import login_required
 
-# --- LOGIN VIEW ---
+# LOGIN VIEW 
 def staff_login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')  # for staff_id or admin_id
         password = request.POST.get('password')
 
-        # --- ADMIN LOGIN ---
+        #  ADMIN LOGIN 
         if username == '1' and password == '123456':
             request.session['is_admin'] = True
             return redirect('admin_dashboard')
 
-        # --- STAFF LOGIN ---
+        #  STAFF LOGIN 
         try:
             staff = StaffAccount.objects.get(staff_id=username, password=password)
             request.session['staff_id'] = staff.staff_id
@@ -26,7 +26,7 @@ def staff_login_view(request):
     return render(request, 'bustrackr_app/staff_login.html')
 
 
-# --- LOGOUT VIEW ---
+#  LOGOUT VIEW
 def logout_view(request):
     """Logs out both admin and staff users and clears session data."""
     # Clear all session data
@@ -38,9 +38,19 @@ def logout_view(request):
     return redirect('staff_login')
 
 
-# --- DASHBOARDS ---
+# DASHBOARDS 
 def home(request):
     return render(request, 'bustrackr_app/home.html')
+
+def about(request):
+    return render(request, "bustrackr_app/user_about_us.html", {
+        "company_name": "BusTrackr",
+        "mission": "Making transport tracking simple, reliable and accessible for all.",
+        "founding_year": 2024,
+        "founders": ["Alice Smith", "Bob Johnson"],
+        "core_values": ["Transparency", "Reliability", "Innovation"],
+    
+    })
 
 def staff_dashboard_view(request):
     if not request.session.get('staff_id'):
@@ -53,7 +63,7 @@ def admin_dashboard_view(request):
     return render(request, 'bustrackr_app/admin_dashboard.html')
 
 
-# --- STAFF MANAGEMENT ---
+#STAFF MANAGEMENT
 def add_staff_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -68,29 +78,49 @@ def add_staff_view(request):
     return redirect('admin_dashboard')
 
 
-# --- OTHER EXISTING PAGES ---
+#OTHER EXISTING PAGES
 def schedule_management(request):
-    if not request.session.get('staff_id'):
+    if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
     return render(request, 'bustrackr_app/staff_dashboard_schedule.html')
 
 def seat_availability(request):
-    if not request.session.get('staff_id'):
+    if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/seat_availability.html')
+    return render(request, 'bustrackr_app/staff_dashboard_seat_availability.html')
 
 def bus_overview(request):
-    if not request.session.get('staff_id'):
+    if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/bus_overview.html')
+    return render(request, 'bustrackr_app/staff_dashboard_bus_overview.html')
 
 def reports(request):
-    if not request.session.get('staff_id'):
+    if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/reports.html')
+    return render(request, 'bustrackr_app/staff_dashboard_reports.html')
+
+def user_management(request):
+    if not request.session.get('is_admin'):
+        return redirect('staff_login')
+    return render(request, 'bustrackr_app/admin_user_management.html')
+
+def bus_management(request):
+    if not request.session.get('is_admin'):
+        return redirect('staff_login')
+    return render(request, 'bustrackr_app/admin_bus_schedule.html')
 
 
-# --- STAFF DASHBOARD PROTECTED ROUTE ---
+# MGA RANGE SA SEATS KWAA LNG NI KUNG DI NI MAO ANG ANO INYO NA ENVISION SA SEAT AVAILABILITY
+def seat_availability_view(request):
+    seats = range(1, 21)  
+    return render(request, 'staff_dashboard_seat_availability.html', {'seats': seats})
+
+
+
+
+
+
+# STAFF DASHBOARD PROTECTED ROUTE
 @login_required(login_url='staff_login')
 def staff_dashboard(request):
     if not request.session.get('staff_id'):

@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Left Panel */
 .left-panel {
   background: #1e3a8a; /* Tailwind blue-900 */
