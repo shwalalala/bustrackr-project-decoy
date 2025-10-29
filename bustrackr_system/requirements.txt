@@ -5,6 +5,7 @@ django-tailwind==4.2.0
 django-browser-reload==1.15.0
 psycopg2==2.9.11
 python-dotenv==1.1.1
-supabase==2.3.0
+supabase==1.2.0
+httpx==0.27.0
 sqlparse==0.5.3
 tzdata==2025.2
