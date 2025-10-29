@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://bustrackrcebu.onrender.com"]
+ALLOWED_HOSTS = ["bustrackrcebu.onrender.com"]
 
 
 # Application definition
