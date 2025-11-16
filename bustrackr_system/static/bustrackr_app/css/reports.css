@@ -1,0 +1,19 @@
+.top-bar { 
+    background-color: #1b3fa1; 
+    color: #fff; 
+    padding: 12px 20px; 
+    border-radius: 6px; 
+    font-weight: 500; }
+    
+.report-card {
+      border-radius: 15px; 
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      background: #fff; 
+      padding: 20px; 
+      margin-bottom: 20px;
+    }
+    
+.report-card h6 { 
+    color: #173f8a; 
+    font-weight: 600; 
+}

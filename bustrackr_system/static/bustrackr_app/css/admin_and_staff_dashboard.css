@@ -1,0 +1,78 @@
+
+
+body {
+  background-color: #f8f9fa !important;
+}
+
+.sidebar {
+  height: 100vh;
+  background-color: #0a2e73;
+  color: #fff;
+  padding-top: 20px;
+  position: fixed;
+  width: 240px;
+}
+
+.sidebar .nav-link {
+  color: #d9e1f2;
+  font-weight: 500;
+  margin: 8px 0;
+  border-radius: 10px;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: #173f8a;
+  color: #fff;
+}
+
+.sidebar .logout {
+  position: absolute;
+  bottom: 20px;
+  width: 90%;
+  left: 5%;
+  background-color: #1b1f2f;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 30px;
+}
+
+.top-bar {
+  background-color: #1b3fa1;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.card-stat {
+  background-color: #19aef0;
+  color: #fff;
+  border-radius: 20px;
+  text-align: center;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-stat h3 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.bus-table th {
+  background-color: #173f8a;
+  color: #fff;
+}
+
+.bus-table {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}

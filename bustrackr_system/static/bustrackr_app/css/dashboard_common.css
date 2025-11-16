@@ -1,3 +1,5 @@
+
+
 body {
   background-color: #f8f9fa !important;
 }
@@ -73,4 +75,61 @@ body {
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Status Badges for Schedule Management */
+
+.status-badge {
+    border-radius: 8px;
+    padding: 4px 10px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.status-on {
+    background-color: #4CAF51;
+}
+
+.status-delay {
+    background-color: #FFC107;
+    color: #000;
+}
+
+.status-arrived {
+    background-color: #820e99;
+    color: #000;
+}
+
+.status-departed {
+    background-color: #582df5;
+    color: #000;
+}
+
+.status-cancel {
+    background-color: #F44336;
+}
+
+.search-bar {
+    border: 2px solid #00a6ff;
+    border-radius: 20px;
+    padding: 6px 12px;
+    width: 100%;
+    max-width: 350px;
+    outline: none;
+}
+
+/* Seat Availability Status */
+
+.status-boarding {
+    background-color: #4CAF51;
+}
+
+.status-full {
+    background-color: #F44336;
+    color: #000;
+}
+
+.status-waiting {
+    background-color: #FFC107;
 }
