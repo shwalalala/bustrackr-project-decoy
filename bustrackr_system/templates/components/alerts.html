@@ -1,0 +1,15 @@
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      <div class="alert alert-soft alert-success flex items-center gap-4 mb-3" role="alert">
+        <span class="icon-[tabler--circle-check] shrink-0 size-6"></span>
+        <p><span class="text-lg font-semibold">Success:</span> {{ message }}</p>
+      </div>
+    {% elif message.tags == 'error' or message.tags == 'warning' %}
+      <div class="alert alert-soft alert-warning flex items-center gap-4 mb-3" role="alert">
+        <span class="icon-[tabler--alert-triangle] shrink-0 size-6"></span>
+        <p><span class="text-lg font-semibold">Warning:</span> {{ message }}</p>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}

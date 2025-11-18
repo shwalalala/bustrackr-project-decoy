@@ -65,6 +65,7 @@ def admin_dashboard_view(request):
 
 
 #STAFF MANAGEMENT
+""""
 def add_staff_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -77,6 +78,25 @@ def add_staff_view(request):
         messages.success(request, f'Staff "{name}" added successfully! Staff ID: {staff_id}')
         return redirect('user_management')
     return redirect('user_management')
+"""
+def add_staff_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+
+        try:
+            new_staff = StaffAccount(name=name, password=password)
+            new_staff.save()
+
+            staff_id = new_staff.staff_id
+            messages.success(request, f'Staff "{name}" added successfully! Staff ID: {staff_id}')
+        except Exception as e:
+            messages.error(request, f'Failed to add staff: {str(e)}')
+
+        return redirect('user_management')
+    return redirect('user_management')
+
+
 
 def edit_staff_view(request, staff_id):
     staff = get_object_or_404(StaffAccount, pk=staff_id)
