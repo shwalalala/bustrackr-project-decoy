@@ -16,9 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from bustrackr_app import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('bustrackr_app.urls')), 
     path("__reload__/", include("django_browser_reload.urls")),
+   
+   #register bus url
+    path("register-bus/", views.register_bus, name="register_bus"),
+    path("dashboard/", views.dashboard, name="dashboard"),  # Keep this if needed elsewhere
+    path("admin-dashboard/", views.admin_dashboard_view, name="admin_dashboard"),  # Add this
+    path("delete-bus/<str:id>/", views.delete_bus, name="delete_bus"),
+    path("edit-bus/<str:id>/", views.edit_bus, name="edit_bus"),
+    path("schedule-management/", views.schedule_management, name="schedule_management"),
+    path("schedule/add/", views.create_schedule, name="create_schedule"),
+    path("schedule/edit/<str:id>/", views.edit_schedule, name="edit_schedule"),
+    path("schedule/delete/<str:id>/", views.delete_schedule, name="delete_schedule"),
+
 ]
