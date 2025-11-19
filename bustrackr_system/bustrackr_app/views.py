@@ -4,6 +4,10 @@ from django.contrib import messages
 from .supabase_client import supabase
 from .models import StaffAccount, AdminAccount
 from django.contrib.auth.decorators import login_required
+from supabase import create_client
+import requests
+from django.http import JsonResponse
+import uuid
 
 # LOGIN VIEW 
 def staff_login_view(request):
@@ -56,12 +60,115 @@ def about(request):
 def staff_dashboard_view(request):
     if not request.session.get('staff_id'):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/staff_dashboard.html')
+    # Fetch buses from Supabase to display on the staff dashboard
+    try:
+        resp = supabase.table("bus").select("*").execute()
+        buses = resp.data if resp and hasattr(resp, 'data') else []
+    except Exception as e:
+        print(f"Error fetching buses for staff dashboard: {e}")
+        buses = []
+
+    return render(request, 'bustrackr_app/staff_dashboard.html', {
+        'buses': buses
+    })
+
+# def admin_dashboard_view(request):
+#     if not request.session.get('is_admin'):
+#         return redirect('staff_login')
+#     return render(request, 'bustrackr_app/admin_dashboard.html')
 
 def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/admin_dashboard.html')
+    
+    # Get buses from Supabase
+    try:
+        buses = supabase.table("bus").select("*").execute()
+        bus_data = buses.data
+    except Exception as e:
+        print(f"Error fetching buses: {e}")
+        bus_data = []
+    
+    return render(request, 'bustrackr_app/admin_dashboard.html', {
+        "buses": bus_data
+    })
+
+#CREATE BUS REGISTER VIEW
+# def register_bus(request):
+#     if request.method == "POST":
+#         data = {
+#             "plate_number": request.POST["plate_number"],
+#             "bus_company": request.POST["bus_company"],
+#             "bus_type": request.POST["bus_type"],
+#             "capacity": int(request.POST["capacity"]),
+#         }
+#         supabase.table("bus").insert(data).execute()
+#         return redirect("dashboard")
+
+#     return render(request, "components/register_bus.html")
+
+def register_bus(request):
+    if request.method == 'POST':
+        plate_number = request.POST.get('plate_number')
+        bus_company = request.POST.get('bus_company')
+        bus_type = request.POST.get('bus_type')
+        capacity = request.POST.get('capacity')
+        
+        # Validate required fields
+        if not all([plate_number, bus_company, bus_type, capacity]):
+            messages.error(request, 'All fields are required!')
+            return redirect('admin_dashboard')
+        
+        try:
+            # Save to Supabase
+            data = {
+                "plate_number": plate_number,
+                "bus_company": bus_company,
+                "bus_type": bus_type,
+                "capacity": int(capacity),
+                "status": request.POST["status"], 
+            }
+            response = supabase.table("bus").insert(data).execute()
+            
+            if response.data:
+                messages.success(request, 'Bus registered successfully!')
+            else:
+                messages.error(request, 'Failed to register bus.')
+                
+        except Exception as e:
+            messages.error(request, f'Error registering bus: {str(e)}')
+        
+        return redirect('admin_dashboard')  # Redirect to admin dashboard
+    
+    # If GET request, redirect to admin dashboard
+    return redirect('admin_dashboard')
+
+#READ BUS LIST
+def dashboard(request):
+    buses = supabase.table("bus").select("*").execute()
+
+    return render(request, "bustrackr_app/dashboard.html", {
+        "buses": buses.data
+    })
+
+#DELETE BUS
+def delete_bus(request, id):
+    supabase.table("bus").delete().eq("id", id).execute()
+    messages.success(request, 'Bus deleted successfully!')
+    return redirect("admin_dashboard")  # Redirect to admin dashboard
+
+#EDIT BUS
+def edit_bus(request, id):
+    if request.method == "POST":
+        updated = {
+            "capacity": int(request.POST["capacity"]),
+            "status": request.POST["status"]
+        }
+        supabase.table("bus").update(updated).eq("id", id).execute()
+        messages.success(request, "Bus updated successfully!")
+        return redirect("admin_dashboard")
+
+    return redirect("admin_dashboard")
 
 
 #STAFF MANAGEMENT
@@ -166,3 +273,87 @@ def staff_dashboard(request):
     if not request.session.get('staff_id'):
         return redirect('staff_login')
     return render(request, 'bustrackr_app/staff_dashboard.html')
+
+#SCHEDULE MANAGEMENT
+
+def schedule_management(request):
+    if not (request.session.get('is_admin') or request.session.get('staff_id')):
+        return redirect('staff_login')
+
+    try:
+        buses = supabase.table("bus").select("*").execute().data
+        schedules = supabase.table("bus_schedule").select("*").execute().data
+    except Exception as e:
+        print("Error:", e)
+        buses, schedules = [], []
+
+    routes = [
+        "Cebu - Toledo",
+        "Cebu - Pinamungahan",
+        "Cebu - Aloguinsan",
+        "Cebu - Asturias"
+    ]
+
+    statuses = ["On Time", "Delayed", "Cancelled"]
+
+    return render(request, 'bustrackr_app/staff_dashboard_schedule.html', {
+        "buses": buses,
+        "schedules": schedules,
+        "routes": routes,
+        "statuses": statuses
+    })
+
+
+
+
+# POSTGREST_URL = "http://127.0.0.1:8000/bus_schedule"
+
+def create_schedule(request):
+    if request.method == "POST":
+        data = request.POST
+
+        payload = {
+            "bus_id": int(data.get("bus_id")),
+            "route": data.get("route"),
+            "departure_time": data.get("departure_time"),
+            "arrival_time": data.get("arrival_time"),
+            "status": data.get("status"),
+        }
+
+        # Validate required fields
+        if not all([payload["bus_id"], payload["route"], payload["departure_time"], payload["arrival_time"], payload["status"]]):
+            messages.error(request, "All fields are required.")
+            return redirect("schedule_management")
+
+        try:
+            supabase.table("bus_schedule").insert(payload).execute()
+            messages.success(request, "Schedule created successfully!")
+        except Exception as e:
+            messages.error(request, f"Error creating schedule: {str(e)}")
+
+        return redirect("schedule_management")
+
+
+def edit_schedule(request, id):
+    if request.method == "POST":
+        updated = {
+            "bus_id": int(request.POST.get("bus_id")),
+            "route": request.POST.get("route"),
+            "departure_time": request.POST.get("departure_time"),
+            "arrival_time": request.POST.get("arrival_time"),
+            "status": request.POST.get("status"),
+        }
+
+        try:
+            supabase.table("bus_schedule").update(updated).eq("id", id).execute()
+            messages.success(request, "Schedule updated successfully!")
+        except Exception as e:
+            messages.error(request, f"Error updating schedule: {str(e)}")
+
+    return redirect("schedule_management")
+
+
+def delete_schedule(request, id):
+    supabase.table("bus_schedule").delete().eq("id", id).execute()
+    messages.success(request, "Schedule deleted successfully!")
+    return redirect("schedule_management")

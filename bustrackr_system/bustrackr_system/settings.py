@@ -27,8 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-$l@gzlwmwl5gl_13mo#x6rqb4j+t$-*gf)ywq%ly)zgp@@(gz='
+# Prefer setting SECRET_KEY in environment for production. For development,
+# fall back to a deterministic (but non-secret) value so the app can run
+# and migrations/sessions work. Replace with a secure secret in production.
 SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # Development fallback key (replace before deploying)
+    SECRET_KEY = "dev-secret-replace-me-2025-10-27-9f3a2b"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -106,15 +111,87 @@ WSGI_APPLICATION = 'bustrackr_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": dj_database_url.parse(
-        os.getenv("DATABASE_URL"),
-        conn_max_age=600,  # persistent connections
-        ssl_require=True   # ensures psycopg2 uses SSL
-    )
-}
+# DATABASE configuration
+# If a DATABASE_URL environment variable is provided, try to parse it with
+# dj_database_url. Be defensive: handle bytes-like values, quoted strings, or
+# accidental Python byte-repr values like "b'postgres://...'". If parsing
+# fails or no variable is provided, fall back to a local SQLite database.
+raw_db_url = os.getenv("DATABASE_URL")
 
-DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
+def _clean_db_url(val: str) -> str | None:
+    if not val:
+        return None
+    # If bytes accidentally got through, decode them
+    if isinstance(val, bytes):
+        try:
+            val = val.decode()
+        except Exception:
+            return None
+    val = val.strip()
+    # Handle values like "b'postgres://...'" or "b\"postgres://...\""
+    if (val.startswith("b'") and val.endswith("'")) or (val.startswith('b"') and val.endswith('"')):
+        val = val[2:-1]
+    # Strip surrounding single/double quotes
+    if (val.startswith("'") and val.endswith("'")) or (val.startswith('"') and val.endswith('"')):
+        val = val[1:-1]
+    return val or None
+
+clean_db_url = _clean_db_url(raw_db_url)
+
+if clean_db_url:
+    # Check whether a Postgres driver is available. Django will fail during
+    # startup if the engine is set to Postgres but no DB driver is installed,
+    # so only configure Postgres when a driver is present.
+    import importlib
+
+    driver_available = False
+    for driver in ("psycopg", "psycopg2"):
+        try:
+            importlib.import_module(driver)
+            driver_available = True
+            break
+        except Exception:
+            continue
+
+    if not driver_available:
+        print("Warning: DATABASE_URL provided but no psycopg driver installed; falling back to sqlite.\n"
+              "Install 'psycopg' (psycopg3) or 'psycopg2' to use Postgres: `pip install psycopg` or `pip install psycopg2-binary`.")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+    else:
+        try:
+            # Force SSL for remote Postgres by default. If you need to disable
+            # SSL for a specific environment, set an env var DATABASE_SSL=false
+            ssl_req = True
+            db_ssl_env = os.getenv("DATABASE_SSL")
+            if db_ssl_env and db_ssl_env.strip().lower() in ("0", "false", "no"):
+                ssl_req = False
+
+            DATABASES = {
+                'default': dj_database_url.parse(clean_db_url, conn_max_age=600, ssl_require=ssl_req)
+            }
+        except Exception as exc:
+            # If parsing fails for any reason, fall back to sqlite and print a
+            # helpful message for the developer. Don't stop startup because of
+            # a malformed DATABASE_URL in development.
+            print(f"Warning: could not parse DATABASE_URL ({exc}); falling back to sqlite.")
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': BASE_DIR / 'db.sqlite3',
+                }
+            }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

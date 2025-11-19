@@ -1,0 +1,26 @@
+<!-- Confirm Save Modal -->
+<div class="modal fade" id="confirmSaveModal" tabindex="-1" aria-labelledby="confirmSaveLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmSaveLabel">Confirm Save</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to save these changes?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">No, Cancel</button>
+
+        <!-- FINAL SUBMIT BUTTON -->
+        <button class="btn btn-primary" onclick="submitEditBusForm()">
+          Yes, Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
