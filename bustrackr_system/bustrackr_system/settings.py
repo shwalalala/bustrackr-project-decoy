@@ -38,10 +38,18 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if DEBUG:
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-else:
-    ALLOWED_HOSTS = ["bustrackr-u4kd.onrender.com"]
+# if DEBUG:
+#     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# else:
+#     ALLOWED_HOSTS = ["bustrackr-u4kd.onrender.com"]
+
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".onrender.com",   # all render domains
+]
 
 #ALLOWED_HOSTS = ["bustrackr-u4kd.onrender.com"]
 
