@@ -1,0 +1,44 @@
+<div class="modal fade" id="edit_bus" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-3 shadow-lg">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Bus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form method="POST" id="editBusForm">
+          {% csrf_token %}
+
+          <!-- Hidden fields -->
+          <input type="hidden" id="editBusPlate" name="plate_number">
+          <input type="hidden" id="editBusCompany" name="bus_company">
+          <input type="hidden" id="editBusType" name="bus_type">
+
+          <!-- Capacity -->
+          <div class="mb-3">
+            <label class="form-label">Capacity</label>
+            <input type="number" class="form-control" id="editBusCapacity" name="capacity" required min="1">
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="editBusStatus" name="status" required>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="openConfirmSaveModal()">Save Changes</button>
+      </div>
+
+    </div>
+  </div>
+</div>

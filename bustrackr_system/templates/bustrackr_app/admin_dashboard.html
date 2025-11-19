@@ -14,74 +14,144 @@
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
 </head>
+
 <body class="bg-white">
 
   <!-- Sidebar -->
   {% include 'components/sidebar.html' %}
 
   <!-- Alerts -->
+  {% include 'components/alerts.html' %}
 
-    {% include 'components/alerts.html' %}
-  
-
-  <!-- Main Content -->
+  <!-- MAIN CONTENT -->
   <div class="main-content p-4">
-    <div class="top-bar mb-4">
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="terminalDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Cebu South Bus Terminal
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="terminalDropdown">
-          <li><a class="dropdown-item" href="#">Cebu North Bus Terminal</a></li>
-          <li><a class="dropdown-item" href="#">Cebu South Bus Terminal</a></li>
-        </ul>
-      </div>
-    </div>
 
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#registerBusModal">
+      <i class="bi bi-bus-front me-1"></i> Register Bus
+    </button>
 
- 
-<!-- Add Staff Button -->
-<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#add_staff">
-  <i class="bi bi-person-plus me-1"></i> Add Staff
-</button>
+    {% include 'components/register_bus.html' %}
 
-    <!-- Include Modal -->
-    {% include 'components/add_staff.html' %}
-
-    <!-- Dashboard Overview -->
     {% include 'components/dashboard_overview.html' %}
 
-     <div class="card p-3 bus-table">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Bus Schedule</h5>
-      <div>
-        <button class="btn btn-light btn-sm me-2">Today</button>
-        <button class="btn btn-light btn-sm">Filter</button>
+    <div class="card p-3 bus-table">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Bus List</h5>
       </div>
-    </div>
 
-    <table class="table table-striped mb-0">
-      <thead>
-        <tr>
-          <th>Plate No.</th>
-          <th>Destination</th>
-          <th>Departure</th>
-          <th>Status</th>
-          <th>Seats</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="6" class="text-center text-muted">No data available</td></tr>
-      </tbody>
-    </table>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Plate No.</th>
+            <th>Company</th>
+            <th>Bus Type</th>
+            <th>Capacity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% if buses %}
+            {% for bus in buses %}
+            <tr>
+              <td>{{ bus.plate_number }}</td>
+              <td>{{ bus.bus_company }}</td>
+              <td>{{ bus.bus_type }}</td>
+              <td>{{ bus.capacity }}</td>
+
+              <td>
+                {% if bus.status == "Active" %}
+                  <span class="badge bg-success">Active</span>
+                {% else %}
+                  <span class="badge bg-secondary">Inactive</span>
+                {% endif %}
+              </td>
+
+              <td class="d-flex gap-2">
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  onclick="openEditBusModal(
+                      '{{ bus.id }}',
+                      '{{ bus.plate_number }}',
+                      '{{ bus.bus_company }}',
+                      '{{ bus.bus_type }}',
+                      '{{ bus.capacity }}',
+                      '{{ bus.status }}'
+                  )">
+                  <i class="bi bi-pencil"></i>
+                </button>
+
+                <a href="{% url 'delete_bus' bus.id %}" 
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="openDeleteBusModal('{{ bus.id }}')">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">No buses found</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
   </div>
-  </div>
+
+  <!-- INCLUDE MODALS -->
+  {% include 'components/modals/edit_bus_modal.html' %}
+  {% include 'components/modals/confirm_save_modal.html' %}
+  {% include 'components/modals/confirm_register_bus_modal.html' %}
+  {% include 'components/modals/confirm_delete_bus_modal.html' %}
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-   
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // EDIT BUS MODAL
+    function openEditBusModal(id, plate, company, type, capacity, status) {
+      document.getElementById("editBusForm").action = "/edit-bus/" + id + "/";
+
+      document.getElementById("editBusPlate").value = plate;
+      document.getElementById("editBusCompany").value = company;
+      document.getElementById("editBusType").value = type;
+
+      document.getElementById("editBusCapacity").value = capacity;
+      document.getElementById("editBusStatus").value = status;
+
+      var modal = new bootstrap.Modal(document.getElementById('edit_bus'));
+      modal.show();
+    }
+
+    function openConfirmSaveModal() {
+      var modal = new bootstrap.Modal(document.getElementById('confirmSaveModal'));
+      modal.show();
+    }
+
+    function submitEditBusForm() {
+      document.getElementById("editBusForm").submit();
+    }
+
+    // REGISTER CONFIRMATION
+    function openConfirmRegisterModal() {
+        let confirmModal = new bootstrap.Modal(document.getElementById('confirmRegisterBusModal'));
+        confirmModal.show();
+    }
+
+    function submitRegisterBus() {
+        document.querySelector('#registerBusModal form').submit();
+    }
+
+    // DELETE CONFIRMATION
+    function openDeleteBusModal(id) {
+        document.getElementById("deleteBusBtn").href = "/delete-bus/" + id + "/";
+        var modal = new bootstrap.Modal(document.getElementById('confirmDeleteBus'));
+        modal.show();
+    }
+  </script>
+
 </body>
 </html>
