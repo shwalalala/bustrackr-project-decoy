@@ -5,8 +5,8 @@ from .supabase_client import supabase
 from .models import StaffAccount, AdminAccount
 from django.contrib.auth.decorators import login_required
 from supabase import create_client
-import requests
-from django.http import JsonResponse
+#import requests
+#from django.http import JsonResponse
 import uuid
 
 # LOGIN VIEW 
