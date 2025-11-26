@@ -16,20 +16,28 @@
             <input name="plate_number" class="form-control" placeholder="Enter plate number" required>
           </div>
           <div class="mb-3">
-            <label class="form-label">Bus Company</label>
-            <input name="bus_company" class="form-control" placeholder="Enter bus company" required>
+            <label class="form-label">Bus Company</label>x
+            <select name="bus_company" class="form-select" required>
+              <option value="" disabled selected hidden>Select Bus Company</option>
+              <option value="ceres">Ceres Liner</option>
+              <option value="jegans">Jegans Bus Liner</option>
+              <option value="jerel">Jerel Transport</option>
+              <option value="jhade">Jhade Trans</option>
+              <option value="jrk">JRK South Transport</option>
+              <option value="calvo">JS Calvo Transport</option>
+            </select>
           </div>
           <div class="mb-3">
             <label class="form-label">Bus Type</label>
             <select name="bus_type" class="form-select" required>
-              <option value="">Select bus type</option>
+              <option value="" disabled selected hidden>Select Bus Type</option>
               <option value="Regular">Regular Bus</option>
               <option value="Air-conditioned">Air-conditioned</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="form-label">Capacity</label>
-            <input name="capacity" type="number" class="form-control" placeholder="Enter capacity" min="1" required>
+            <input name="capacity" type="number" class="form-control" placeholder="Enter Capacity" min="1" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Status</label>
