@@ -6,35 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BusTrackr Cebu - Admin Dashboard</title>
 
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <!-- Custom Styles -->
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/pie_chart.css' %}">
 </head>
 
 <body class="bg-white">
 
-  <!-- Sidebar -->
   {% include 'components/sidebar.html' %}
 
-  <!-- Alerts -->
   {% include 'components/alerts.html' %}
 
-  <!-- MAIN CONTENT -->
   <div class="main-content p-4">
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#registerBusModal">
-      <i class="bi bi-bus-front me-1"></i> Register Bus
-    </button>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerBusModal">
+            <i class="bi bi-bus-front me-1"></i> Register Bus
+        </button>
+    </div>
 
     {% include 'components/register_bus.html' %}
 
     {% include 'components/dashboard_overview.html' %}
 
-    <div class="card p-3 bus-table">
+    <div class="card p-3 bus-table mb-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Bus List</h5>
       </div>
@@ -99,16 +97,105 @@
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- INCLUDE MODALS -->
-  {% include 'components/modals/edit_bus_modal.html' %}
+    <h5 class="fw-bold mb-3">Analytics & Reports</h5>
+
+    <div class="row align-items-stretch">
+        <div class="col-md-8 mb-4 d-flex">
+          <div class="card-stat-chart p-4 text-center flex-fill h-100">
+            <h5 class="fw-semibold mb-3 text-white">Bus Utilization Overview</h5>
+            <canvas id="busUtilizationBar"></canvas>
+            <p class="mt-3 mb-0 text-white-50">Data for the current month</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4 d-flex">
+          <div class="card-stat-chart p-4 flex-fill h-100">
+            <h5 class="fw-semibold mb-3 text-white">Bus Status Breakdown</h5>
+
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="status-dot bg-primary me-2"></span>
+              <div class="flex-grow-1 text-white">Active</div>
+              <div class="text-white-50">18 buses (60%)</div>
+            </div>
+
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="status-dot bg-info me-2"></span>
+              <div class="flex-grow-1 text-white">Idle</div>
+              <div class="text-white-50">6 buses (20%)</div>
+            </div>
+
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="status-dot bg-warning me-2"></span>
+              <div class="flex-grow-1 text-white">Maintenance</div>
+              <div class="text-white-50">3 buses (10%)</div>
+            </div>
+
+            <div class="legend-item d-flex align-items-center">
+              <span class="status-dot bg-success me-2"></span>
+              <div class="flex-grow-1 text-white">On Trip</div>
+              <div class="text-white-50">3 buses (10%)</div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="card p-3 bus-table mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0 fw-semibold">Route Performance</h5>
+          <div>
+            <button class="btn btn-light btn-sm me-2">Today</button>
+            <button class="btn btn-light btn-sm">Filter</button>
+          </div>
+        </div>
+
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Route</th>
+              <th>Total Trips</th>
+              <th>Buses Assigned</th>
+              <th>Total Passengers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cebu - Talisay</td>
+              <td>12</td>
+              <td>6</td>
+              <td>480</td>
+            </tr>
+            <tr>
+              <td>Cebu - Mandaue</td>
+              <td>10</td>
+              <td>5</td>
+              <td>410</td>
+            </tr>
+            <tr>
+              <td>Cebu - Carcar</td>
+              <td>8</td>
+              <td>4</td>
+              <td>360</td>
+            </tr>
+            <tr>
+              <td>Cebu - Naga</td>
+              <td>6</td>
+              <td>3</td>
+              <td>290</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+  </div> {% include 'components/modals/edit_bus_modal.html' %}
   {% include 'components/modals/confirm_save_modal.html' %}
   {% include 'components/modals/confirm_register_bus_modal.html' %}
   {% include 'components/modals/confirm_delete_bus_modal.html' %}
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'bustrackr_app/js/chart.js' %}"></script>
 
   <script>
     // EDIT BUS MODAL
