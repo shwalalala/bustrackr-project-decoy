@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db.models import Q
 from .supabase_client import supabase
-from .models import StaffAccount, AdminAccount
+from .models import StaffAccount, AdminAccount, Bus
 from django.contrib.auth.decorators import login_required
 from supabase import create_client
 #import requests
@@ -81,16 +82,23 @@ def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
     
-    # Get buses from Supabase
     try:
-        buses = supabase.table("bus").select("*").execute()
-        bus_data = buses.data
+        response = supabase.table("bus").select("*").execute()
+        bus_data = response.data if response else []
+        
+        active_buses_count = 0
+        for bus in bus_data:
+            if bus.get('status') in ['Active', 'Delayed']:
+                active_buses_count += 1
+                
     except Exception as e:
         print(f"Error fetching buses: {e}")
         bus_data = []
+        active_buses_count = 0
     
     return render(request, 'bustrackr_app/admin_dashboard.html', {
-        "buses": bus_data
+        "buses": bus_data,
+        "active_buses_count": active_buses_count
     })
 
 #CREATE BUS REGISTER VIEW
@@ -286,7 +294,16 @@ def user_management(request):
 def bus_management(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/admin_bus_schedule.html')
+
+    active_buses_count = Bus.objects.filter(
+        Q(status='Active') | Q(status='Delayed')
+    ).count()
+
+    context = {
+        'active_buses_count': active_buses_count,
+    }
+
+    return render(request, 'bustrackr_app/admin_bus_schedule.html', context)
 
 # STAFF DASHBOARD PROTECTED ROUTE
 @login_required(login_url='staff_login')
