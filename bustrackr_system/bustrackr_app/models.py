@@ -30,3 +30,19 @@ class StaffAccount(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.staff_id})"
+
+
+class Bus(models.Model):
+    plate_number = models.CharField(max_length=50)
+    bus_company = models.CharField(max_length=100)
+    bus_type = models.CharField(max_length=50)
+    capacity = models.IntegerField()
+    status = models.CharField(max_length=50, default='Active') 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'bus'
+
+    def __str__(self):
+        return self.plate_number
+
