@@ -253,6 +253,25 @@ def edit_staff_view(request, staff_id=None):
     context = {'staff': staff}
     return render(request, 'edit_staff.html', context)
 
+def delete_staff_view(request, staff_id):
+    staff = get_object_or_404(StaffAccount, staff_id=staff_id)
+
+    if request.method == "POST":
+        name = staff.name
+
+        try:
+            staff.delete()
+            supabase.table("StaffAccount").delete().eq("staff_id", staff_id).execute()
+
+            messages.success(request, f'Staff "{name}" deleted successfully.')
+        except Exception as e:
+            print("Delete Error:", e)
+            messages.error(request, "Failed to delete staff. Please try again later.")
+
+        return redirect("user_management")
+
+    return redirect("user_management")
+
 #OTHER EXISTING PAGES
 def schedule_management(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):

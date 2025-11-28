@@ -21,12 +21,7 @@
       <a href="{% url 'seat_availability' %}" class="nav-link {% if request.path == '/seat-availability/' %}active{% endif %}">
         <i class="bi bi-people me-2"></i>Seat Availability
       </a>
-      <a href="{% url 'bus_overview' %}" class="nav-link {% if request.path == '/bus-overview/' %}active{% endif %}">
-        <i class="bi bi-bus-front me-2"></i>Bus Overview
-      </a>
-      <a href="{% url 'reports' %}" class="nav-link {% if request.path == '/reports/' %}active{% endif %}">
-        <i class="bi bi-file-earmark-bar-graph me-2"></i>Reports
-      </a>
+      
     </nav>
 
     <a href="{% url 'logout' %}" class="logout">
@@ -53,9 +48,7 @@
       <a href="{% url 'bus_overview' %}" class="nav-link {% if request.path == '/bus-overview/' %}active{% endif %}">
         <i class="bi bi-bus-front me-2"></i>Bus Overview
       </a>
-      <a href="{% url 'reports' %}" class="nav-link {% if request.path == '/reports/' %}active{% endif %}">
-        <i class="bi bi-file-earmark-bar-graph me-2"></i>Reports
-      </a>
+      
     </nav>
 
     <a href="{% url 'logout' %}" class="logout">

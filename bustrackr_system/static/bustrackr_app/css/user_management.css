@@ -1,0 +1,74 @@
+
+    .page-title {
+      color: #1b3fa1;
+      font-weight: 600;
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      background-color: white;
+    }
+
+    .table thead {
+      background-color: #1b3fa1;
+      color: white;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #eaf3ff;
+    }
+
+    .search-box {
+      position: relative;
+      width: 250px;
+    }
+
+    .search-box input {
+      border-radius: 8px;
+      padding-left: 35px;
+    }
+
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #1b3fa1;
+    }
+
+    .btn-primary {
+      background-color: #19aef0;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #159ad3;
+    }
+
+    .badge.bg-success {
+      background-color: #4CAF51 !important;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .btn-outline-primary {
+      color: #1b3fa1;
+      border-color: #1b3fa1;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #1b3fa1;
+      color: white;
+    }
+
+    .btn-outline-danger:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+  
