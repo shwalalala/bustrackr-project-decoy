@@ -1,0 +1,71 @@
+/* Centered floating container */
+.alerts-container {
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  pointer-events: none; /* lets clicks pass through */
+}
+
+.alert {
+  display: inline-flex;
+  align-items: center;       /* keeps icon + text vertically centered */
+  justify-content: center;
+  gap: 8px;                  /* slightly tighter spacing */
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;           /* a bit smaller for compactness */
+  padding: 8px 20px;         /* reduced padding for slimmer height */
+  color: #fff;
+  width: 60%;
+  max-width: 800px;
+  min-width: 400px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  animation: slideDown 0.4s ease, fadeOut 0.5s ease 3.5s forwards;
+  pointer-events: auto;
+}
+
+/* Color styles */
+.alert-success {
+  background-color: #22c55e;
+}
+
+.alert-warning {
+  background-color: #f97316;
+}
+
+/* Iconify icon style */
+.alert .iconify {
+  font-size: 18px;           /* slightly smaller to match text height */
+  line-height: 0;            /* keeps vertical alignment tight */
+  vertical-align: middle;
+}
+
+/* Slide in from top */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Fade out and slide up */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}

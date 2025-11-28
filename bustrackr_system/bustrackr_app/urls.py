@@ -15,10 +15,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path("about/", views.about, name="about"),
     path("user-management/", views.user_management, name="user_management"),
-    path("bus-management/", views.bus_management, name="bus_management"),
-    path('edit-staff/<str:staff_id>/', views.edit_staff_view, name='edit_staff'),
-
-
-
-
+    path("bus-management/", views.bus_management, name="bus_management"),    
+    
 ]

@@ -204,33 +204,54 @@ def add_staff_view(request):
     return redirect('user_management')
 
 
+def edit_staff_view(request, staff_id=None):
 
-def edit_staff_view(request, staff_id):
-    staff = get_object_or_404(StaffAccount, pk=staff_id)
+    # Accept staff_id from either the URL or the hidden form input
+    if request.method == 'POST':
+        staff_id = staff_id or request.POST.get('staff_id')
+
+    # Now safely fetch the staff object
+    staff = get_object_or_404(StaffAccount, staff_id=staff_id)
 
     if request.method == 'POST':
         name = request.POST.get('name')
         password = request.POST.get('password')
 
+        # Update name
         staff.name = name
-        staff.password = password
+
+        # Update password only if provided
+        if password and password.strip() != "":
+            staff.password = password
+
         staff.save()
 
-        response = supabase.table("StaffAccount").update({
-            "name": name,
-            "password": password
-        }).eq("staff_id", staff_id).execute()
+        # Prepare Supabase update fields
+        update_data = {"name": name}
+        if password and password.strip() != "":
+            update_data["password"] = password
 
-        if response.data:
-            messages.success(request, f'Staff "{name}" updated successfully (Synced with Supabase)!')
-        else:
-            messages.warning(request, f'Staff updated locally but failed to sync with Supabase.')
+        # Update in Supabase
+        try:
+            response = supabase.table("StaffAccount") \
+                .update(update_data) \
+                .eq("staff_id", staff_id) \
+                .execute()
+
+            if response.data:
+                messages.success(request, f'Staff "{name}" updated successfully and synced with Supabase!')
+            else:
+                messages.warning(request, f'Staff updated locally but Supabase did not update.')
+
+        except Exception as e:
+            print("Supabase update error:", e)
+            messages.warning(request, "Staff updated locally but failed to sync with Supabase.")
 
         return redirect('user_management')
 
+    # GET request — load modal template
     context = {'staff': staff}
     return render(request, 'edit_staff.html', context)
-
 
 #OTHER EXISTING PAGES
 def schedule_management(request):

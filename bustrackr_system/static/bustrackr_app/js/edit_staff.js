@@ -8,9 +8,9 @@ editModal.addEventListener('show.bs.modal', event => {
 
     const form = editModal.querySelector('form');
     const nameInput = editModal.querySelector('#editStaffName');
-
+    const idInput = editModal.querySelector('#editStaffId');  // Hidden input
     nameInput.value = staffName;
+    idInput.value = staffId;
 
-    // CORRECTED URL (dash instead of underscore)
     form.action = `/edit-staff/${staffId}/`;
 });
