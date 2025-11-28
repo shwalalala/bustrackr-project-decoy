@@ -11,7 +11,7 @@ class AdminAccount(models.Model):
 
 
 class StaffAccount(models.Model):
-    staff_id = models.CharField(max_length=20, unique=True)
+    staff_id = models.CharField(max_length=20, unique=True, blank=True)
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
