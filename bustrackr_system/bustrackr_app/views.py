@@ -6,6 +6,7 @@ from .supabase_client import supabase
 from .models import StaffAccount, AdminAccount, Bus
 from django.contrib.auth.decorators import login_required
 from supabase import create_client
+from datetime import datetime
 #import requests
 #from django.http import JsonResponse
 import uuid
@@ -73,11 +74,6 @@ def staff_dashboard_view(request):
         'buses': buses
     })
 
-# def admin_dashboard_view(request):
-#     if not request.session.get('is_admin'):
-#         return redirect('staff_login')
-#     return render(request, 'bustrackr_app/admin_dashboard.html')
-
 def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
@@ -100,20 +96,6 @@ def admin_dashboard_view(request):
         "buses": bus_data,
         "active_buses_count": active_buses_count
     })
-
-#CREATE BUS REGISTER VIEW
-# def register_bus(request):
-#     if request.method == "POST":
-#         data = {
-#             "plate_number": request.POST["plate_number"],
-#             "bus_company": request.POST["bus_company"],
-#             "bus_type": request.POST["bus_type"],
-#             "capacity": int(request.POST["capacity"]),
-#         }
-#         supabase.table("bus").insert(data).execute()
-#         return redirect("dashboard")
-
-#     return render(request, "components/register_bus.html")
 
 def register_bus(request):
     if request.method == 'POST':
@@ -180,20 +162,6 @@ def edit_bus(request, id):
 
 
 #STAFF MANAGEMENT
-""""
-def add_staff_view(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        password = request.POST.get('password')
-
-        new_staff = StaffAccount(name=name, password=password)
-        new_staff.save()
-
-        staff_id = new_staff.staff_id
-        messages.success(request, f'Staff "{name}" added successfully! Staff ID: {staff_id}')
-        return redirect('user_management')
-    return redirect('user_management')
-"""
 def add_staff_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -300,7 +268,7 @@ def reports(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
     return render(request, 'bustrackr_app/staff_dashboard_reports.html')
-
+""""
 def user_management(request):
      if not request.session.get('is_admin'):
         return redirect('staff_login')
@@ -308,7 +276,21 @@ def user_management(request):
      staff_list = response.data  # Supabase returns a list of dicts
 
      return render(request, "bustrackr_app/admin_user_management.html", {"staff_list": staff_list})
-    
+"""
+def user_management(request):
+    if not request.session.get('is_admin'):
+        return redirect('staff_login')
+
+    response = supabase.table("bustrackr_app_staffaccount").select("*").execute()
+    staff_list = response.data  # Supabase returns a list of dicts
+
+    # 🔥 Convert Supabase timestamps into real datetime objects
+    for staff in staff_list:
+        created_at = staff.get("created_at")
+        if created_at:
+            staff["created_at"] = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+
+    return render(request, "bustrackr_app/admin_user_management.html", {"staff_list": staff_list}) 
 
 def bus_management(request):
     if not request.session.get('is_admin'):

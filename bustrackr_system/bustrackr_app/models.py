@@ -14,7 +14,8 @@ class StaffAccount(models.Model):
     staff_id = models.CharField(max_length=20, unique=True, blank=True)
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    created_at = models.DateTimeField(auto_now_add=True)
+    #created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     @staticmethod
     def generate_staff_id():
@@ -26,6 +27,9 @@ class StaffAccount(models.Model):
     def save(self, *args, **kwargs):
         if not self.staff_id:
             self.staff_id = self.generate_staff_id()
+
+        if not self.created_at:
+            self.created_at = datetime.now()
         super().save(*args, **kwargs)
 
     def __str__(self):
