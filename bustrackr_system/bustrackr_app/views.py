@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Q
 from .supabase_client import supabase
-from .models import StaffAccount, AdminAccount, Bus
+from .models import StaffAccount, AdminAccount, Bus, Schedule
 from django.contrib.auth.decorators import login_required
 from supabase import create_client
 from datetime import datetime
@@ -47,7 +47,19 @@ def logout_view(request):
 
 # DASHBOARDS 
 def home(request):
-    return render(request, 'bustrackr_app/home.html')
+    schedules = Schedule.objects.all()
+    
+    buses = Bus.objects.all()
+    bus_map = {bus.id: bus for bus in buses}
+
+    for sched in schedules:
+        sched.bus = bus_map.get(sched.bus_id)
+
+    context = {
+        'schedules': schedules
+    }
+    
+    return render(request, 'bustrackr_app/home.html', context)
 
 def about(request):
     return render(request, "bustrackr_app/user_about_us.html", {
@@ -78,23 +90,33 @@ def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
     
+    # 1. Initialize variables safely at the top
+    # This guarantees they are always defined, preventing NameError
+    bus_data = []
+    active_buses_count = 0
+    inactive_buses_count = 0 
+    
     try:
         response = supabase.table("bus").select("*").execute()
         bus_data = response.data if response else []
         
-        active_buses_count = 0
+        # 2. Calculate Active Buses
         for bus in bus_data:
             if bus.get('status') in ['Active', 'Delayed']:
                 active_buses_count += 1
+        
+        # 3. Calculate Inactive Buses
+        total_buses = len(bus_data)
+        inactive_buses_count = total_buses - active_buses_count
                 
     except Exception as e:
         print(f"Error fetching buses: {e}")
-        bus_data = []
-        active_buses_count = 0
+        # No need to reset variables here, they are already 0 from the top
     
     return render(request, 'bustrackr_app/admin_dashboard.html', {
         "buses": bus_data,
-        "active_buses_count": active_buses_count
+        "active_buses_count": active_buses_count,
+        "inactive_buses_count": inactive_buses_count 
     })
 
 def register_bus(request):
@@ -128,10 +150,10 @@ def register_bus(request):
         except Exception as e:
             messages.error(request, f'Error registering bus: {str(e)}')
         
-        return redirect('admin_dashboard')  # Redirect to admin dashboard
+        return redirect('bus_management')  # Redirect to admin dashboard
     
     # If GET request, redirect to admin dashboard
-    return redirect('admin_dashboard')
+    return redirect('bus_management')
 
 #READ BUS LIST
 def dashboard(request):
@@ -145,7 +167,7 @@ def dashboard(request):
 def delete_bus(request, id):
     supabase.table("bus").delete().eq("id", id).execute()
     messages.success(request, 'Bus deleted successfully!')
-    return redirect("admin_dashboard")  # Redirect to admin dashboard
+    return redirect("bus_management") 
 
 #EDIT BUS
 def edit_bus(request, id):
@@ -156,9 +178,9 @@ def edit_bus(request, id):
         }
         supabase.table("bus").update(updated).eq("id", id).execute()
         messages.success(request, "Bus updated successfully!")
-        return redirect("admin_dashboard")
+        return redirect("bus_management")
 
-    return redirect("admin_dashboard")
+    return redirect("bus_management")
 
 
 #STAFF MANAGEMENT
@@ -325,12 +347,23 @@ def bus_management(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
 
+    # 1. Get ALL buses
+    buses = Bus.objects.all().order_by('-id')
+    total_buses = buses.count()
+
+    # 2. Count Active (Active + Delayed)
     active_buses_count = Bus.objects.filter(
         Q(status='Active') | Q(status='Delayed')
     ).count()
 
+    # 3. Calculate Inactive (Total minus Active)
+    # This guarantees the math always balances
+    inactive_buses_count = total_buses - active_buses_count
+
     context = {
+        'buses': buses,
         'active_buses_count': active_buses_count,
+        'inactive_buses_count': inactive_buses_count, 
     }
 
     return render(request, 'bustrackr_app/admin_bus_schedule.html', context)

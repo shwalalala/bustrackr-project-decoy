@@ -24,3 +24,7 @@
       max-width: 350px;
       outline: none;
     }
+
+    .time {
+    text-transform: uppercase;
+}
