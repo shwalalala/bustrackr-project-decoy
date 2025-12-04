@@ -7,6 +7,7 @@ from .models import StaffAccount, AdminAccount, Bus, Schedule
 from django.contrib.auth.decorators import login_required
 from supabase import create_client
 from datetime import datetime
+from collections import defaultdict
 import requests
 #from django.http import JsonResponse
 import uuid
@@ -86,38 +87,93 @@ def staff_dashboard_view(request):
         'buses': buses
     })
 
+from collections import defaultdict, Counter
+
+from collections import defaultdict
+
 def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
     
-    # 1. Initialize variables safely at the top
-    # This guarantees they are always defined, preventing NameError
     bus_data = []
     active_buses_count = 0
     inactive_buses_count = 0 
     
     try:
-        response = supabase.table("bus").select("*").execute()
-        bus_data = response.data if response else []
+        bus_resp = supabase.table("bus").select("*").execute()
+        bus_data = bus_resp.data if bus_resp else []
         
-        # 2. Calculate Active Buses
+        # Calculate Active/Inactive based on inventory
         for bus in bus_data:
             if bus.get('status') in ['Active', 'Delayed']:
                 active_buses_count += 1
         
-        # 3. Calculate Inactive Buses
-        total_buses = len(bus_data)
-        inactive_buses_count = total_buses - active_buses_count
+        inactive_buses_count = len(bus_data) - active_buses_count
                 
     except Exception as e:
         print(f"Error fetching buses: {e}")
-        # No need to reset variables here, they are already 0 from the top
+
+    try:
+        sched_resp = supabase.table("bus_schedule").select("*").execute()
+        schedules = sched_resp.data if sched_resp else []
+    except Exception as e:
+        print(f"Error fetching schedules: {e}")
+        schedules = []
+
+    # Calculate Status Counts for the Chart & Legend
+    # Use keys without spaces for easier HTML access
+    status_counts = {"OnTime": 0, "Delayed": 0, "Cancelled": 0}
     
-    return render(request, 'bustrackr_app/admin_dashboard.html', {
+    # Calculate Route Performance for the Table
+    route_stats = defaultdict(lambda: {"trips": 0, "passengers": 0, "buses": set()})
+
+    for sched in schedules:
+        # Status Logic
+        status = sched.get('status')
+        if status == "On Time":
+            status_counts["OnTime"] += 1
+        elif status == "Delayed":
+            status_counts["Delayed"] += 1
+        elif status == "Cancelled":
+            status_counts["Cancelled"] += 1
+        
+        # Route Logic
+        route = sched.get('route')
+        if route:
+            route_stats[route]["trips"] += 1
+            pax = sched.get('passengers_onboard') or 0
+            route_stats[route]["passengers"] += pax
+            route_stats[route]["buses"].add(sched.get('bus_id'))
+
+    # Format Route Data for Template
+    final_route_data = []
+    for route_name, data in route_stats.items():
+        final_route_data.append({
+            "name": route_name,
+            "trips": data["trips"],
+            "passengers": data["passengers"],
+            "unique_buses": len(data["buses"])
+        })
+
+    # Prepare Chart Data Arrays for JS
+    chart_labels = ["On Time", "Delayed", "Cancelled"]
+    chart_data = [status_counts["OnTime"], status_counts["Delayed"], status_counts["Cancelled"]]
+
+    context = {
+        # Inventory Data (Blue Cards)
         "buses": bus_data,
         "active_buses_count": active_buses_count,
-        "inactive_buses_count": inactive_buses_count 
-    })
+        "inactive_buses_count": inactive_buses_count,
+        
+        # Report/Chart Data (Graphs & Tables)
+        "route_performance": final_route_data,
+        "status_counts": status_counts,
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
+        "total_tracked": len(schedules)
+    }
+    
+    return render(request, 'bustrackr_app/admin_dashboard.html', context)
 
 def register_bus(request):
     if request.method == 'POST':
@@ -318,7 +374,65 @@ def bus_overview(request):
 def reports(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/staff_dashboard_reports.html')
+
+    # 1. Fetch all schedules
+    try:
+        response = supabase.table("bus_schedule").select("*").execute()
+        schedules = response.data if response else []
+    except Exception as e:
+        print(f"Error fetching schedules: {e}")
+        schedules = []
+
+    # 2. Initialize Counters (Use specific keys matching your DB status)
+    status_counts = {
+        "On Time": 0,
+        "Delayed": 0,
+        "Cancelled": 0
+    }
+    
+    # 3. Route Logic
+    route_stats = defaultdict(lambda: {"trips": 0, "passengers": 0, "buses": set()})
+
+    for sched in schedules:
+        # Count Status
+        status = sched.get('status')
+        if status in status_counts:
+            status_counts[status] += 1
+        
+        # Aggregate Route Data
+        route = sched.get('route')
+        if route:
+            route_stats[route]["trips"] += 1
+            pax = sched.get('passengers_onboard') or 0
+            route_stats[route]["passengers"] += pax
+            route_stats[route]["buses"].add(sched.get('bus_id'))
+
+    # 4. Format Route Data
+    final_route_data = []
+    for route_name, data in route_stats.items():
+        final_route_data.append({
+            "name": route_name,
+            "trips": data["trips"],
+            "passengers": data["passengers"],
+            "unique_buses": len(data["buses"])
+        })
+
+    # 5. Prepare Chart Data
+    chart_labels = ["On Time", "Delayed", "Cancelled"]
+    chart_data = [status_counts["On Time"], status_counts["Delayed"], status_counts["Cancelled"]]
+    
+    total_buses_tracked = len(schedules)
+
+    context = {
+        "route_performance": final_route_data,
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
+        "status_counts": status_counts, # <--- We need this for the legend
+        "total_tracked": total_buses_tracked
+    }
+
+    return render(request, 'bustrackr_app/staff_dashboard_reports.html', context)
+
 """"
 def user_management(request):
      if not request.session.get('is_admin'):
