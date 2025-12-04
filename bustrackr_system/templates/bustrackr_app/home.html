@@ -80,43 +80,57 @@
         </div>
 
         <!-- Bus Schedule List -->
-        <div class="mt-8">
-          <h3 class="text-xl font-semibold mb-4">Bus Schedule</h3>
+        <div class="mt-8" id="bus-section">
+  <h3 class="text-xl font-semibold mb-4">Bus Schedule</h3>
 
-          <!-- Schedule Cards -->
+  {% if schedules %}
+    {% for sched in schedules %}
+    
+      {% if sched.status == "On Time" %}
           <div class="flex items-center justify-between border-l-4 border-green-500 bg-gray-50 rounded-md p-4 mb-4 shadow-sm">
-            <div>
-              <h4 class="text-lg font-bold">Cebu to Bohol</h4>
-              <p class="text-sm text-gray-600">Departure: 3:20PM<br>Est. Arrival: 5:00PM</p>
-            </div>
-            <span class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">On-Time</span>
-          </div>
-
+      {% elif sched.status == "Boarding Now" %}
           <div class="flex items-center justify-between border-l-4 border-yellow-500 bg-gray-50 rounded-md p-4 mb-4 shadow-sm">
-            <div>
-              <h4 class="text-lg font-bold">Cebu to Oslob</h4>
-              <p class="text-sm text-gray-600">Departure: 3:20PM<br>Est. Arrival: 5:20PM</p>
-            </div>
-            <span class="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-700">Boarding Now</span>
-          </div>
-
+      {% elif sched.status == "Delayed" %}
           <div class="flex items-center justify-between border-l-4 border-orange-500 bg-gray-50 rounded-md p-4 mb-4 shadow-sm">
-            <div>
-              <h4 class="text-lg font-bold">Cebu to Dumaguete</h4>
-              <p class="text-sm text-gray-600">Departure: 3:20PM<br>Est. Arrival: 7:00PM</p>
-            </div>
-            <span class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-700">Delayed</span>
-          </div>
-
+      {% elif sched.status == "Cancelled" %}
           <div class="flex items-center justify-between border-l-4 border-red-500 bg-gray-50 rounded-md p-4 mb-4 shadow-sm">
-            <div>
-              <h4 class="text-lg font-bold">Cebu to Dumaguete</h4>
-              <p class="text-sm text-gray-600">Departure: 3:20PM<br>Est. Arrival: 7:00PM</p>
-            </div>
-            <span class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">Cancelled</span>
-          </div>
+      {% else %}
+          <div class="flex items-center justify-between border-l-4 border-gray-500 bg-gray-50 rounded-md p-4 mb-4 shadow-sm">
+      {% endif %}
 
+        <div>
+          <h4 class="text-lg font-bold">{{ sched.route }}</h4>
+          
+          {% if sched.bus %}
+            <p class="text-xs text-gray-500 mb-1">Bus: {{ sched.bus.bus_company|title }} ({{ sched.bus.plate_number|upper }})</p>
+          {% endif %}
+
+          <p class="text-sm text-gray-600">
+            Departure: {{ sched.departure_time|time:"g:i A" }}<br>
+            Est. Arrival: {{ sched.arrival_time|time:"g:i A" }}
+          </p>
         </div>
+
+        {% if sched.status == "On Time" %}
+           <span class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">{{ sched.status }}</span>
+        {% elif sched.status == "Boarding Now" %}
+           <span class="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-700">{{ sched.status }}</span>
+        {% elif sched.status == "Delayed" %}
+           <span class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-700">{{ sched.status }}</span>
+        {% elif sched.status == "Cancelled" %}
+           <span class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">{{ sched.status }}</span>
+        {% else %}
+           <span class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-200 text-gray-700">{{ sched.status }}</span>
+        {% endif %}
+
+      </div>
+    {% endfor %}
+  {% else %}
+      <div class="text-center py-8 bg-gray-50 rounded-lg">
+          <p class="text-gray-500">No active bus schedules at the moment.</p>
+      </div>
+  {% endif %}
+  </div>
 
       </div>
     </section>
