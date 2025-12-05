@@ -125,48 +125,56 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  {{ chart_labels|json_script:"chart-labels-data" }}
+  {{ chart_data|json_script:"chart-data-data" }}
+
   <script>
     document.addEventListener("DOMContentLoaded", function() {
         const ctx = document.getElementById('tripStatusChart');
         if (ctx) {
-            // Get data directly from Django
-            const labels = {{ chart_labels|safe }};
-            const data = {{ chart_data|safe }};
+            // 2. READ DATA SAFELY IN JAVASCRIPT
+            // Using try-catch to be extra safe
+            try {
+                const labels = JSON.parse(document.getElementById('chart-labels-data').textContent);
+                const data = JSON.parse(document.getElementById('chart-data-data').textContent);
 
-            new Chart(ctx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: labels, // ["On Time", "Delayed", "Cancelled"]
-                    datasets: [{
-                        label: 'Trips',
-                        data: data, // Actual numbers from database
-                        backgroundColor: [
-                            '#198754', // Green
-                            '#ffc107', // Yellow
-                            '#dc3545'  // Red
-                        ],
-                        borderWidth: 0,
-                        borderRadius: 4,
-                        barPercentage: 0.5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: '#cbd5e1', stepSize: 1 }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#cbd5e1' }
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels, 
+                        datasets: [{
+                            label: 'Trips',
+                            data: data, 
+                            backgroundColor: [
+                                '#198754', // Green
+                                '#ffc107', // Yellow
+                                '#dc3545'  // Red
+                            ],
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            barPercentage: 0.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#cbd5e1', stepSize: 1 }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#cbd5e1' }
+                            }
                         }
                     }
-                }
-            });
+                });
+            } catch (error) {
+                console.error("Error loading chart data:", error);
+            }
         }
     });
 

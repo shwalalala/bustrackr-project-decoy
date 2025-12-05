@@ -75,22 +75,33 @@ def about(request):
 def staff_dashboard_view(request):
     if not request.session.get('staff_id'):
         return redirect('staff_login')
-    # Fetch buses from Supabase to display on the staff dashboard
+    
+    buses = [] 
+    
     try:
         resp = supabase.table("bus").select("*").execute()
-        buses = resp.data if resp and hasattr(resp, 'data') else []
+        if resp and hasattr(resp, 'data'):
+            buses = resp.data
+            
     except Exception as e:
         print(f"Error fetching buses for staff dashboard: {e}")
-        buses = []
 
-    return render(request, 'bustrackr_app/staff_dashboard.html', {
-        'buses': buses
-    })
+    active_buses_count = 0
+    for bus in buses:
+        if bus.get('status') in ['Active', 'Delayed']:
+            active_buses_count += 1
+            
+    inactive_buses_count = len(buses) - active_buses_count
 
-from collections import defaultdict, Counter
+    context = {
+        'buses': buses,
+        'active_buses_count': active_buses_count,
+        'inactive_buses_count': inactive_buses_count,
+    }
 
-from collections import defaultdict
+    return render(request, 'bustrackr_app/staff_dashboard.html', context)
 
+    
 def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
