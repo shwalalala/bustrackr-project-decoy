@@ -1,92 +1,87 @@
 <div class="row g-3 mb-4">
-  <div class="col-md-3">
-    <div class="card-stat">
-      <p>Active Buses</p>
-      <h3>{{ active_buses_count }}</h3>
+  <div class="col-md-4">
+    <div class="card p-3 text-white text-center border-0 shadow-sm" style="background-color: #19aef0;">
+      <p class="mb-1">Active Buses</p>
+      <h3 class="fw-bold">{{ active_buses_count }}</h3>
     </div>
   </div>
   
-  <div class="col-md-3">
-    <div class="card-stat">
-      <p>Inactive Buses</p>
-      <h3>{{ inactive_buses_count }}</h3>
+  <div class="col-md-4">
+    <div class="card p-3 text-white text-center border-0 shadow-sm" style="background-color: #19aef0;">
+      <p class="mb-1">Inactive Buses</p>
+      <h3 class="fw-bold">{{ inactive_buses_count }}</h3>
     </div>
   </div>
   
-  <div class="col-md-3">
-    <div class="card-stat">
-      <p>Passengers Today</p>
-      <h3>0</h3>
+  <div class="col-md-4">
+    <div class="card p-3 text-white text-center border-0 shadow-sm" style="background-color: #19aef0;">
+      <p class="mb-1">Passengers Today</p>
+      <h3 class="fw-bold">0</h3>
     </div>
   </div>
-  
-  <div class="col-md-3">
-    <div class="card-stat">
-      <p>Completed Trips</p>
-      <h3>0</h3>
-    </div>
-  </div>
-</div> 
+</div>
 
-<div class="card p-3 bus-table mb-5">
+<div class="card p-3 bus-table mb-5 shadow-sm border-0">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">Bus List</h5>
+    <h5 class="mb-0 fw-bold">Bus List</h5>
   </div>
 
-  <table class="table table-striped">
-    <thead>
-        <tr>
-          <th>Plate No.</th>
-          <th>Company</th>
-          <th>Bus Type</th>
-          <th>Capacity</th>
-          <th>Status</th>
-          <th>Actions</th>
+  <div class="table-responsive">
+    <table class="table table-striped align-middle mb-0">
+      <thead>
+        <tr style="border-bottom: 2px solid #173f8a;">
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Plate No.</th>
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Company</th>
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Bus Type</th>
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Capacity</th>
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Status</th>
+          <th style="background-color: #173f8a; color: white; padding: 12px;">Actions</th>
         </tr>
-    </thead>
-    <tbody>
-      {% if buses %}
-        {% for bus in buses %}
-        <tr>
-          <td>{{ bus.plate_number }}</td>
-          <td>{{ bus.bus_company }}</td>
-          <td>{{ bus.bus_type }}</td>
-          <td>{{ bus.capacity }}</td>
-          <td>
-            {% if bus.status == "Active" %}
-              <span class="badge bg-success">Active</span>
-            {% else %}
-              <span class="badge bg-secondary">Inactive</span>
-            {% endif %}
-          </td>
-          <td class="d-flex gap-2">
-            <button 
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              onclick="openEditBusModal(
-                  '{{ bus.id }}',
-                  '{{ bus.plate_number }}',
-                  '{{ bus.bus_company }}',
-                  '{{ bus.bus_type }}',
-                  '{{ bus.capacity }}',
-                  '{{ bus.status }}'
-              )">
-              <i class="bi bi-pencil"></i>
-            </button>
+      </thead>
+      <tbody>
+        {% if buses %}
+          {% for bus in buses %}
+          <tr>
+            <td class="fw-semibold">{{ bus.plate_number }}</td>
+            <td>{{ bus.bus_company }}</td>
+            <td>{{ bus.bus_type }}</td>
+            <td>{{ bus.capacity }}</td>
+            <td>
+              {% if bus.status == "Active" %}
+                <span class="badge bg-success">Active</span>
+              {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <button 
+                type="button"
+                class="btn btn-sm btn-outline-primary"
+                onclick="openEditBusModal(
+                    '{{ bus.id }}',
+                    '{{ bus.plate_number }}',
+                    '{{ bus.bus_company }}',
+                    '{{ bus.bus_type }}',
+                    '{{ bus.capacity }}',
+                    '{{ bus.status }}'
+                )">
+                <i class="bi bi-pencil"></i>
+              </button>
 
-            <a href="{% url 'delete_bus' bus.id %}" 
-               class="btn btn-sm btn-outline-danger"
-               onclick="openDeleteBusModal('{{ bus.id }}')">
-              <i class="bi bi-trash"></i>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td colspan="6" class="text-center text-muted">No buses found</td>
-        </tr>
-      {% endif %}
-    </tbody>
-  </table>
+              <a href="{% url 'delete_bus' bus.id %}" 
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="openDeleteBusModal('{{ bus.id }}')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">No buses found</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </div>
