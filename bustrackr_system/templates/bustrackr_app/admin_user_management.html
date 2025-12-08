@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/user_management.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
 
 
 </head>
@@ -21,10 +22,10 @@
 
   <!-- Sidebar -->
   {% include 'components/sidebar.html' %}
-  {% include 'components/alerts.html' %}
-
+  
   <!-- Main Content -->
   <div class="main-content p-4">
+    {% include 'components/alerts.html' %}
     {% include 'components/add_staff.html' %}
     {% include 'components/edit_staff.html' %}
     {% include 'components/delete_staff.html' %}
@@ -120,6 +121,7 @@
     crossorigin="anonymous"></script>
 <script src="{% static 'bustrackr_app/js/edit_staff.js' %}"></script>
 <script src="{% static 'bustrackr_app/js/delete_staff.js' %}"></script>
+<script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
 
 </body>
 </html>

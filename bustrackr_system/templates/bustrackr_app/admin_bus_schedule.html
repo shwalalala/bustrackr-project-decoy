@@ -11,14 +11,15 @@
 
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
 </head>
 
 <body class="bg-white">
 
   {% include 'components/sidebar.html' %}
-  {% include 'components/alerts.html' %}
-
+  
   <div class="main-content p-4">
+    {% include 'components/alerts.html' %}
 
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#registerBusModal">
       <i class="bi bi-bus-front me-1"></i> Register Bus
@@ -33,9 +34,10 @@
   {% include 'components/modals/edit_bus_modal.html' %}
   {% include 'components/modals/confirm_save_modal.html' %}
   {% include 'components/modals/confirm_register_bus_modal.html' %}
-  {% include 'components/modals/confirm_delete_bus_modal.html' %}
+  {% include 'components/modals/confirm_delete_bus_modal.html' %>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
 
   <script>
     // EDIT BUS MODAL
