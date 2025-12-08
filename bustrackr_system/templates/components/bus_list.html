@@ -1,0 +1,90 @@
+<div class="card p-3 bus-table mb-5 shadow-sm border-0">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0 text-primary">Bus List</h5>
+
+        {% if request.session.is_admin %}
+        <div>
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#registerBusModal">
+                <i class="bi bi-bus-front me-1"></i> Register Bus
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead>
+                <tr style="border-bottom: 2px solid #173f8a;">
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Plate No.</th>
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Company</th>
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Bus Type</th>
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Capacity</th>
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Status</th>
+
+                    {% if request.session.is_admin %}
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">Actions</th>
+                    {% else %}
+                    <th style="background-color: #173f8a; color: white; padding: 12px;">—</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if buses %}
+                    {% for bus in buses %}
+                    <tr>
+                        <td class="fw-semibold">{{ bus.plate_number }}</td>
+                        <td>{{ bus.bus_company }}</td>
+                        <td>{{ bus.bus_type }}</td>
+                        <td>{{ bus.capacity }}</td>
+
+                        <td>
+                            {% if bus.status == "Active" %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Admin-only ACTION BUTTONS -->
+                        {% if request.session.is_admin %}
+                        <td>
+                            <button 
+                                type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                onclick="openEditBusModal(
+                                    '{{ bus.id }}',
+                                    '{{ bus.plate_number }}',
+                                    '{{ bus.bus_company }}',
+                                    '{{ bus.bus_type }}',
+                                    '{{ bus.capacity }}',
+                                    '{{ bus.status }}'
+                                )">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <button 
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="openDeleteBusModal('{{ bus.id }}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                        {% else %}
+                        <!-- Staff sees "No Actions" placeholder -->
+                        <td class="text-muted text-center">—</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No buses found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>

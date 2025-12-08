@@ -2,116 +2,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-  <!-- FlyonUI CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/flyonui@2.4.1/dist/css/flyonui.min.css" rel="stylesheet">
-  
-  <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
-  <link rel="stylesheet" href="{% static 'bustrackr_app/css/bustrackr_unified.css' %}">
-  <title>BusTrackr Login</title>
- 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
+    <link rel="stylesheet" href="{% static 'bustrackr_app/css/login.css' %}">
+    
+    <title>BusTrackr Login</title>
 </head>
-<body class="bg-gray-100 font-sans">
- 
-  {% include 'components/alerts.html' %}
-  
-  <div class="flex h-screen">
- 
-    <!-- Left Panel -->
-    <div class="w-1/2 bg-blue-500 text-white flex flex-col justify-center px-16 relative">
-      <!-- Logo -->
-      <div class="absolute top-6 left-8 text-lg font-bold">BusTrackr</div>
- 
-      <!-- Title & Description -->
-      <h2 class="text-4xl font-bold mb-4">Sign in to</h2>
-      <p class="mb-6 text-lg">
-        Manage your buses, operators, and staff easily with BusTrackr’s smart tracking system.
-      </p>
- 
-      <!-- Illustration -->
-      <img
-        src="https://cdni.iconscout.com/illustration/premium/thumb/man-flying-rocket-illustration-download-in-sv…
-        alt="illustration"
-        class="w-80 mx-auto"
-      />
- 
-      <!-- Login As -->
-      <div class="mt-10">
-        <h3 class="text-lg font-semibold mb-4">Sign in as</h3>
-        <div class="flex space-x-6">
-          <!-- Admin -->
-          <div id="adminCard"
-            class="role-card bg-white text-gray-700 rounded-xl shadow p-4 w-36 text-center cursor-pointer hover:shadow-lg">
-            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828469.png"
-              alt="admin"
-              class="w-12 h-12 mx-auto mb-2">
-            <p class="font-semibold">Admin</p>
-          </div>
-     
-          <!-- Staff -->
-          <div id="staffCard"
-            class="role-card bg-white text-gray-700 rounded-xl shadow p-4 w-36 text-center cursor-pointer hover:shadow-lg">
-            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-              alt="staff"
-              class="w-12 h-12 mx-auto mb-2">
-            <p class="font-semibold">Staff</p>
+
+<body class="bg-gray-100 text-gray-900">
+
+    {% include 'components/alerts.html' %}
+
+    <div class="min-h-screen flex justify-center bg-gray-100">
+        <div class="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex flex-1">
+
+            <!-- LEFT PANEL (FORM) -->
+            <div class="lg:w-1/2 xl:w-5/12 p-10 flex flex-col justify-center">
+
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="mx-auto mb-6">
+                    <img src="{% static 'bustrackr_app/images/logo1.png' %}" class="w-32 mx-auto">
+                </a>
+
+                <!-- Title -->
+                <h1 class="text-3xl font-extrabold text-center">Sign in to BusTrackr</h1>
+                <h5 class="text-lg font-normal text-center">Manage your buses, operators, and staff easily with BusTrackr’s smart tracking system.</h5>
+                
+
+                <!-- ROLE SELECT -->
+                <div class="mt-8 flex justify-center gap-6">
+                    <div id="adminCard" 
+                        class="role-card bg-gray-100 hover:bg-gray-200 border rounded-xl shadow p-4 w-36 text-center cursor-pointer transition">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828469.png"
+                             class="w-12 h-12 mx-auto mb-2">
+                        <p class="font-semibold text-gray-700">Admin</p>
+                    </div>
+
+                    <div id="staffCard"
+                        class="role-card bg-gray-100 hover:bg-gray-200 border rounded-xl shadow p-4 w-36 text-center cursor-pointer transition">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
+                             class="w-12 h-12 mx-auto mb-2">
+                        <p class="font-semibold text-gray-700">Staff</p>
+                    </div>
+                </div>
+
+                <!-- FORM -->
+                <form method="POST" action="{% url 'staff_login' %}" class="mt-10 max-w-sm mx-auto w-full">
+                    {% csrf_token %}
+
+                    <!-- Username -->
+                    <label class="block text-gray-700 font-medium mb-1" id="usernameLabel">Staff ID</label>
+                    <input id="usernameInput" 
+                           name="username" 
+                           type="text" 
+                           placeholder="Staff ID"
+                           class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:bg-white focus:border-blue-500">
+                    
+                    <!-- Password -->
+                    <label class="block text-gray-700 font-medium mt-4 mb-1">Password</label>
+                    <input name="password" 
+                           type="password" 
+                           placeholder="Password"
+                           class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:bg-white focus:border-blue-500">
+    
+                    <button id="loginBtn"
+                        class="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg font-bold tracking-wide hover:bg-blue-700 transition">
+                        Sign in as Staff
+                    </button>
+
+                    <!-- Hidden Role Field -->
+                    <input type="hidden" id="selectedRole" name="role" value="Staff">
+                </form>
+
+            </div>
+
+            <!-- RIGHT PANEL (IMAGE) -->
+            <div class="flex-1 hidden lg:flex h-full">
+                <img src="{% static 'bustrackr_app/images/bythesea.jpg' %}"class="w-full h-full object-cover object-center">
+            </div>
           </div>
         </div>
-      </div>
     </div>
- 
-    <!-- Right Panel -->
-    <div class="w-1/2 flex items-center justify-center">
-      <div class="bg-white rounded-2xl shadow-lg p-10 w-96">
-        <h2 class="text-gray-500 mb-1">
-          Welcome to <span class="text-blue-500 font-semibold">BusTrackr</span>
-        </h2>
-        <h1 class="text-3xl font-bold mb-6">Sign in</h1>
- 
-        <!-- Login Form -->
-        <form method="POST" action="{% url 'staff_login' %}">
-          {% csrf_token %}
- 
-          <!-- Dynamic Input -->
-          <div class="mb-4">
-            <label id="usernameLabel" class="block text-gray-700 mb-1">Staff ID</label>
-            <input id="usernameInput" name="username" type="text" placeholder="Staff ID"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
-          </div>
- 
-          <!-- Password -->
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-1">Enter your Password</label>
-            <input name="password" type="password" placeholder="Password"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400">
-            <p class="text-sm text-right mt-1 text-blue-500 cursor-pointer">Forgot Password?</p>
-          </div>
- 
-          {% if messages %}
-            <div class="mb-4">
-              {% for message in messages %}
-                <p class="text-red-600 text-sm">{{ message }}</p>
-              {% endfor %}
-            </div>
-          {% endif %}
- 
-          <!-- Sign In Button -->
-          <button id="loginBtn" type="submit"
-            class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">
-            Sign in as Staff
-          </button>
- 
-          <!-- Hidden Role Field -->
-          <input type="hidden" id="selectedRole" name="role" value="Staff">
-        </form>
-      </div>
-    </div>
-  </div>
- 
-  <script src="{% static 'bustrackr_app/js/login_modal.js' %}"></script>
-  <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
- 
+
+    <script src="{% static 'bustrackr_app/js/login_modal.js' %}"></script>
+    <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
+
 </body>
 </html>

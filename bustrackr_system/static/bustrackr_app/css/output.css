@@ -710,9 +710,10 @@
     }
   }
 }
-body {
+/*body {
   background: linear-gradient(to right, #1e3a8a, #3b82f6);
-}
+}*/
+
 .form-container {
   width: 400px;
   max-width: 90%;

@@ -2,94 +2,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ company_name }} — About Us</title>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>About Us – BusTrackr</title>
+
+    <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
+    
 </head>
-<body class="antialiased text-gray-900">
-  <!-- Hero section -->
-  <section class="bg-gray-50 py-20">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <h1 class="text-4xl lg:text-5xl font-bold mb-4">{{ company_name }}</h1>
-      <p class="text-xl lg:text-2xl text-gray-700 max-w-2xl mx-auto">{{ mission }}</p>
-    </div>
-  </section>
 
-  <!-- Why we exist -->
-  <section class="py-16">
-    <div class="container mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <img src="{% static 'images/about-hero.jpg' %}" alt="About us image" class="w-full rounded-lg shadow-md">
-        </div>
-        <div>
-          <h2 class="text-3xl font-bold mb-4">Why we exist</h2>
-          <p class="text-lg text-gray-700 mb-4">
-            Transport systems are evolving fast — but many operators and passengers still face opaque tracking, delays, and unreliable updates.
-          </p>
-          <p class="text-lg text-gray-700">
-            At <strong>{{ company_name }}</strong>, we believe in simplicity, transparency and connection. Our platform offers real-time tracking, automated alerts and powerful analytics to keep you moving.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+<body class="bg-gray-50 text-gray-900">
+    {% include 'components/navigation.html' %}
 
-  <!-- Our values -->
-  <section class="bg-gray-100 py-16">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <h2 class="text-3xl font-bold mb-8">Our Core Values</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {% for value in core_values %}
-        <div class="bg-white p-8 rounded-lg shadow-sm">
-          <h3 class="text-2xl font-semibold mb-2">{{ value }}</h3>
-          <p class="text-gray-600">
-            <!-- You can tailor each value’s description further -->
-            We live by {{ value|lower }} in everything we do.
-          </p>
+<div class="sm:flex items-center max-w-screen-xl mx-auto py-16 px-6">
+    <!-- Image -->
+    <div class="sm:w-1/2 p-10">
+        <div class="image object-center text-center">
+            <img src="{% static 'bustrackr_app/images/bus_overview.jpg' %}" class="rounded-xl shadow-lg">
         </div>
-        {% endfor %}
-      </div>
     </div>
-  </section>
 
-  <!-- Timeline / history -->
-  <section class="py-16">
-    <div class="container mx-auto px-6 lg:px-8">
-      <h2 class="text-3xl font-bold mb-8 text-center">Our Journey</h2>
-      <div class="space-y-12">
-        <div class="flex flex-col lg:flex-row items-center lg:space-x-8">
-          <div class="lg:w-1/2">
-            <img src="{% static 'images/our-team.jpg' %}" alt="Team image" class="w-full rounded-lg shadow-md">
-          </div>
-          <div class="lg:w-1/2 mt-6 lg:mt-0">
-            <h3 class="text-2xl font-semibold mb-2">{{ founding_year }} – Founded</h3>
-            <p class="text-gray-700">
-              {{ company_name }} was founded in {{ founding_year }} by {{ founders|join:", " }} with a vision to transform public transport tracking.
+    <!-- Text -->
+    <div class="sm:w-1/2 p-5">
+        <div class="text">
+            <span class="text-gray-500 border-b-2 border-indigo-600 uppercase">About BusTrackr</span>
+
+            <h2 class="my-4 font-bold text-3xl sm:text-4xl">
+                About <span class="text-indigo-600">Our System</span>
+            </h2>
+
+            <p class="text-gray-700 leading-relaxed">
+                BusTrackr is designed to provide commuters and transport operators with  
+                real-time visibility, accurate arrival estimates, and efficient monitoring  
+                of bus operations. Our goal is to modernize transportation through  
+                seamless digital tools that enhance reliability and safety.
             </p>
-          </div>
+
+            <a href="{% url 'home' %}"
+               class="inline-block mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow">
+                Explore BusTrackr
+            </a>
         </div>
-        <!-- Add more timeline entries if needed -->
-      </div>
     </div>
-  </section>
+</div>
 
-  <!-- Call to action -->
-  <section class="bg-blue-600 py-16">
-    <div class="container mx-auto px-6 lg:px-8 text-center text-white">
-      <h2 class="text-3xl lg:text-4xl font-bold mb-4">Ready to get started?</h2>
-      <p class="text-lg mb-6">Join us on our mission to make transport better for everyone.</p>
-      <a href="/signup/" class="inline-block bg-white text-blue-600 font-semibold px-8 py-4 rounded-lg shadow-hover">Get Started</a>
-    </div>
-  </section>
+<section class="py-24 bg-white">
+    <h2 class="text-4xl font-extrabold text-center mb-16">Meet the Developers</h2>
 
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-400 py-12">
-    <div class="container mx-auto px-6 lg:px-8 text-center">
-      <p>© {{ founding_year }} {{ company_name }}. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 px-6">
+
+        <!-- Developer Card 1 -->
+        <div class="relative bg-neutral-primary-soft max-w-xs w-full mx-auto p-6 border border-default rounded-base shadow-xs">
+            <button id="dropdownButton1" data-dropdown-toggle="dropdown1"
+                    class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
+                <span class="sr-only">Open dropdown</span>
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
+                </svg>
+            </button>
+
+            <div id="dropdown1" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
+                <ul class="p-2 text-sm text-body font-medium">
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Edit</a></li>
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Export Data</a></li>
+                    <li><a href="#" class="block p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded-md">Delete</a></li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <img class="w-24 h-24 mb-6 rounded-full object-cover"
+                    src="{% static 'bustrackr_app/images/dev_jershe.jpg' %}" alt="Developer 1">
+
+                <h5 class="text-xl font-semibold tracking-tight">Developer Name 1</h5>
+                <span class="text-sm text-body">Backend Developer</span>
+            </div>
+        </div>
+
+        <!-- Developer Card 2 -->
+        <div class="relative bg-neutral-primary-soft max-w-xs w-full mx-auto p-6 border border-default rounded-base shadow-xs">
+            <button id="dropdownButton2" data-dropdown-toggle="dropdown2"
+                    class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
+                <span class="sr-only">Open dropdown</span>
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
+                </svg>
+            </button>
+
+            <div id="dropdown2" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
+                <ul class="p-2 text-sm text-body font-medium">
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Edit</a></li>
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Export Data</a></li>
+                    <li><a href="#" class="block p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded-md">Delete</a></li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <img class="w-24 h-24 mb-6 rounded-full object-cover"
+                    src="{% static 'bustrackr_app/images/dev_sheena.png' %}" alt="Developer 2">
+
+                <h5 class="text-xl font-semibold tracking-tight">Developer Name 2</h5>
+                <span class="text-sm text-body">Frontend Developer</span>
+            </div>
+        </div>
+
+        <!-- Developer Card 3 -->
+        <div class="relative bg-neutral-primary-soft max-w-xs w-full mx-auto p-6 border border-default rounded-base shadow-xs">
+            <button id="dropdownButton3" data-dropdown-toggle="dropdown3"
+                    class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
+                <span class="sr-only">Open dropdown</span>
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
+                </svg>
+            </button>
+
+            <div id="dropdown3" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
+                <ul class="p-2 text-sm text-body font-medium">
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Edit</a></li>
+                    <li><a href="#" class="block p-2 hover:bg-neutral-tertiary-medium rounded-md">Export Data</a></li>
+                    <li><a href="#" class="block p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded-md">Delete</a></li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <img class="w-24 h-24 mb-6 rounded-full object-cover"
+                    src="{% static 'bustrackr_app/images/dev3.jpg' %}" alt="Developer 3">
+
+                <h5 class="text-xl font-semibold tracking-tight">Developer Name 3</h5>
+                <span class="text-sm text-body">System Analyst</span>
+            </div>
+        </div>
+
     </div>
-  </footer>
+</section>
+
+
+<div class="py-24 px-8 max-w-5xl mx-auto flex flex-col md:flex-row gap-12">
+
+    <div class="flex flex-col basis-1/2">
+        <p class="inline-block font-semibold text-indigo-600 mb-4">BusTrackr FAQ</p>
+        <p class="text-4xl font-extrabold">Frequently Asked Questions</p>
+    </div>
+
+    <ul class="basis-1/2">
+
+        <!-- FAQ Item 1 -->
+        <li>
+            <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
+                    aria-expanded="false" onclick="toggleFAQ(this)">
+                <span class="flex-1">How accurate is real-time bus tracking?</span>
+                <svg class="w-4 h-4 ml-auto fill-current">
+                    <rect y="7" width="16" height="2" rx="1"></rect>
+                    <rect y="7" width="16" height="2" rx="1" class="rotate-90 origin-center"></rect>
+                </svg>
+            </button>
+
+            <div class="transition-all duration-300 ease-in-out max-h-0 overflow-hidden">
+                <div class="pb-5 leading-relaxed">
+                    BusTrackr uses real-time data integration with GPS-enabled buses to ensure accurate location tracking.
+                </div>
+            </div>
+        </li>
+
+        <!-- FAQ Item 2 -->
+        <li>
+            <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
+                    aria-expanded="false" onclick="toggleFAQ(this)">
+                <span class="flex-1">Can BusTrackr help reduce waiting time?</span>
+                <svg class="w-4 h-4 ml-auto fill-current">
+                    <rect y="7" width="16" height="2" rx="1"></rect>
+                    <rect y="7" width="16" height="2" rx="1" class="rotate-90 origin-center"></rect>
+                </svg>
+            </button>
+
+            <div class="transition-all duration-300 ease-in-out max-h-0 overflow-hidden">
+                <div class="pb-5 leading-relaxed">
+                    Yes — by providing real-time ETAs, commuters can plan their routes more efficiently.
+                </div>
+            </div>
+        </li>
+
+        <!-- FAQ Item 3 -->
+        <li>
+            <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
+                    aria-expanded="false" onclick="toggleFAQ(this)">
+                <span class="flex-1">Is BusTrackr available on all bus routes?</span>
+                <svg class="w-4 h-4 ml-auto fill-current">
+                    <rect y="7" width="16" height="2" rx="1"></rect>
+                    <rect y="7" width="16" height="2" rx="1" class="rotate-90 origin-center"></rect>
+                </svg>
+            </button>
+
+            <div class="transition-all duration-300 ease-in-out max-h-0 overflow-hidden">
+                <div class="pb-5 leading-relaxed">
+                    Availability depends on the transport operators integrated with our system.
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+{% include 'components/footer.html' %}
+
+
+<!-- FAQ Script -->
+<script>
+function toggleFAQ(button) {
+    const content = button.nextElementSibling;
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", expanded ? "false" : "true");
+    content.style.maxHeight = expanded ? "0" : content.scrollHeight + "px";
+}
+</script>
 
 </body>
 </html>

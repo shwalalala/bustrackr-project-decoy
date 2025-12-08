@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BusTrackr Cebu - Admin Dashboard</title>
-
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
@@ -14,6 +14,7 @@
   
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/bustrackr_unified.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
   
   <style>
     /* Dark Card Style for Reports */
@@ -43,6 +44,7 @@
     {% include 'components/modals/confirm_save_modal.html' %}
     {% include 'components/modals/confirm_register_bus_modal.html' %}
     {% include 'components/modals/confirm_delete_bus_modal.html' %}
+    {% include 'components/bus_list.html' %}
 
     <h5 class="fw-bold mb-3">Analytics & Reports</h5>
 
@@ -127,6 +129,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
 
   {{ chart_labels|json_script:"chart-labels-data" }}
   {{ chart_data|json_script:"chart-data-data" }}

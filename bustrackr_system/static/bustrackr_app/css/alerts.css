@@ -9,17 +9,17 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  pointer-events: none; /* lets clicks pass through */
+  pointer-events: none;
 }
 
 .alert {
   display: inline-flex;
-  align-items: center;       /* keeps icon + text vertically centered */
+  align-items: center;
   justify-content: center;
-  gap: 8px;                  /* slightly tighter spacing */
+  gap: 8px;
   font-family: 'Poppins', sans-serif;
-  font-size: 18px;           /* a bit smaller for compactness */
-  padding: 8px 20px;         /* reduced padding for slimmer height */
+  font-size: 18px;
+  padding: 8px 20px;
   color: #fff;
   width: 60%;
   max-width: 800px;
@@ -28,25 +28,33 @@
   text-align: center;
   font-weight: 500;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  opacity: 0.95;
+
+  /* SOLID alert (no initial fading) */
+  opacity: 1;
+
   transition: opacity 0.5s ease, transform 0.5s ease;
+
+  /* Fade ends at 40% opacity instead of disappearing */
   animation: slideDown 0.4s ease, fadeOut 0.5s ease 3.5s forwards;
-  pointer-events: auto;
 }
 
 /* Color styles */
 .alert-success {
-  background-color: #22c55e;
+  background-color: #22c55e; /* Green */
 }
 
 .alert-warning {
-  background-color: #f97316;
+  background-color: #f97316; /* Orange */
+}
+
+.alert-error {
+  background-color: #dc2626; /* Red */
 }
 
 /* Iconify icon style */
 .alert .iconify {
-  font-size: 18px;           /* slightly smaller to match text height */
-  line-height: 0;            /* keeps vertical alignment tight */
+  font-size: 18px;
+  line-height: 0;
   vertical-align: middle;
 }
 
@@ -62,10 +70,10 @@
   }
 }
 
-/* Fade out and slide up */
+/* Fade out — stop at 0.4 opacity instead of disappearing */
 @keyframes fadeOut {
   to {
-    opacity: 0;
+    opacity: 0.4;
     transform: translate(-50%, -20px);
   }
 }

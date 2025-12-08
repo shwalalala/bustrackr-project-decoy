@@ -6,19 +6,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BusTrackr Cebu</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Custom CSS -->
+
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
 </head>
-<body class="bg-blue-400 text-gray-900 flex flex-col min-h-screen">
+<!-- <body class="bg-blue-400 text-gray-900 flex flex-col min-h-screen">-->
+  <body class="bg-gray-100 text-gray-900 flex flex-col min-h-screen">
 
-  <!--  HEADER  -->
- {% include 'components/header.html' %}
- 
-
-  <!--  NAVIGATION BAR  -->
-  
    {% include 'components/navigation.html' %}
   <!--  BODY  -->
   <main class="flex-grow">
@@ -51,34 +45,104 @@
       <div class="bg-white shadow-lg rounded-lg p-6 mt-8">
         
         <!-- Search/Filter Box -->
-        <div>
-          <h3 class="text-xl font-semibold mb-4">Find Your Bus</h3>
-          <div class="flex space-x-2 mb-4">
-            <input type="text" placeholder="Search by destination or route..." class="flex-grow border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Filter</button>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>All Terminal</option>
-              <option>North Bus Terminal</option>
-              <option>South Bus Terminal</option>
-            </select>
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>All Routes</option>
-            </select>
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>All Departure</option>
-            </select>
-            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option>All Status</option>
-            </select>
-          </div>
-          <div class="flex justify-end space-x-3">
-            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">Clear All</button>
-            <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Apply Filters</button>
-          </div>
-        </div>
+        <!-- Search/Filter Box -->
+<form method="GET">
+  <h3 class="text-xl font-semibold mb-4">Find Your Bus</h3>
 
+  <div class="flex space-x-2 mb-4">
+    <input type="text"
+           name="search"
+           value="{{ request.GET.search }}"
+           placeholder="Search by destination or route..."
+           class="flex-grow border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    
+    <button type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+      Filter
+    </button>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+
+    <select name="bus_company"
+        class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+  <option value="" disabled selected hidden>Select Bus Company</option>
+
+  <option value="">All Bus Companies</option>
+
+  <option value="ceres"
+      {% if request.GET.bus_company == "ceres" %}selected{% endif %}>
+      Ceres Liner
+  </option>
+  <option value="jegans"
+      {% if request.GET.bus_company == "jegans" %}selected{% endif %}>
+      Jegans Bus Liner
+  </option>
+  <option value="jerel"
+      {% if request.GET.bus_company == "jerel" %}selected{% endif %}>
+      Jerel Transport
+  </option>
+  <option value="jhade"
+      {% if request.GET.bus_company == "jhade" %}selected{% endif %}>
+      Jhade Trans
+  </option>
+  <option value="jrk"
+      {% if request.GET.bus_company == "jrk" %}selected{% endif %}>
+      JRK South Transport
+  </option>
+  <option value="calvo"
+      {% if request.GET.bus_company == "calvo" %}selected{% endif %}>
+      JS Calvo Transport
+  </option>
+
+</select>
+
+
+    <select name="route"
+            class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="">All Routes</option>
+      {% for sched in schedules %}
+        <option value="{{ sched.route }}"
+                {% if request.GET.route == sched.route %}selected{% endif %}>
+          {{ sched.route }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="departure"
+            class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="">All Departure</option>
+      <option value="Morning"   {% if request.GET.departure == "Morning" %}selected{% endif %}>Morning</option>
+      <option value="Afternoon" {% if request.GET.departure == "Afternoon" %}selected{% endif %}>Afternoon</option>
+      <option value="Evening"   {% if request.GET.departure == "Evening" %}selected{% endif %}>Evening</option>
+    </select>
+
+    <select name="status"
+            class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="">All Status</option>
+      <option value="On Time"       {% if request.GET.status == 'On Time' %}selected{% endif %}>On Time</option>
+      <option value="Boarding Now"  {% if request.GET.status == 'Boarding Now' %}selected{% endif %}>Boarding Now</option>
+      <option value="Delayed"       {% if request.GET.status == 'Delayed' %}selected{% endif %}>Delayed</option>
+      <option value="Cancelled"     {% if request.GET.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+
+  </div>
+
+  <div class="flex justify-end space-x-3">
+
+    <!-- Clear All resets filters by reloading /home -->
+    <a href="{% url 'home' %}"
+       class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+      Clear All
+    </a>
+
+    <button type="submit"
+            class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+      Apply Filters
+    </button>
+  </div>
+</form>
         <!-- Bus Schedule List -->
         <div class="mt-8" id="bus-section">
   <h3 class="text-xl font-semibold mb-4">Bus Schedule</h3>
