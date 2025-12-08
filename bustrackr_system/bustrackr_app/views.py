@@ -9,6 +9,8 @@ from supabase import create_client
 from datetime import datetime
 from collections import defaultdict
 import requests
+from django.contrib import messages
+
 #from django.http import JsonResponse
 import uuid
 
@@ -343,6 +345,8 @@ def schedule_management(request):
         return redirect('staff_login')
     return render(request, 'bustrackr_app/staff_dashboard_schedule.html')
 
+#SEAT AVAILABILITY
+#SEAT AVAILABILITY
 def seat_availability(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
@@ -364,6 +368,9 @@ def seat_availability(request):
             s["departure_time"] = convert_time_string(s.get("departure_time"))
             s["arrival_time"] = convert_time_string(s.get("arrival_time"))
             
+        # SORT SCHEDULES ALPHABETICALLY BY ROUTE
+        schedules = sorted(schedules, key=lambda x: x.get("route", "").lower())
+        
         print("Schedules fetched:", schedules)
         print("Buses fetched:", buses)
 
@@ -375,6 +382,88 @@ def seat_availability(request):
         "schedules": schedules,
         "buses": buses,
     })
+
+#seat availability update
+def update_seat_availability(request):
+    if request.method == "POST":
+
+        schedule_id = request.POST.get("schedule_id")
+        operation = request.POST.get("operation")
+        count = int(request.POST.get("passenger_count"))
+
+        print("\n--- DEBUG: START UPDATE ---")
+        print("Received schedule_id:", schedule_id)
+        print("Operation:", operation)
+        print("Passenger count:", count)
+
+        # Fetch schedule row
+        schedule_resp = supabase.table("bus_schedule").select("*").eq("id", schedule_id).execute()
+        print("Schedule response:", schedule_resp)
+
+        if not schedule_resp.data:
+            messages.error(request, "Schedule not found.")
+            return redirect("seat_availability")
+
+        schedule = schedule_resp.data[0]
+
+        # Fetch bus info
+        bus_id_from_schedule = schedule["bus_id"]
+        bus_resp = supabase.table("bus").select("*").eq("id", bus_id_from_schedule).execute()
+        print("Bus response:", bus_resp)
+
+        bus = bus_resp.data[0]
+        capacity = int(bus["capacity"])
+
+        # Current values
+        available = int(schedule.get("available_seats") or capacity)
+        onboard = int(schedule.get("passengers_onboard") or 0)
+
+        print("Current available:", available)
+        print("Current onboard:", onboard)
+
+        # =======================
+        # VALIDATION LOGIC (NEW)
+        # =======================
+
+        # ❌ Cannot subtract if zero passengers onboard
+        if operation == "subtract" and onboard == 0:
+            messages.warning(request, "Cannot subtract passengers. There are no passengers onboard yet.")
+            return redirect("seat_availability")
+
+        # ❌ Cannot add more passengers than available seats
+        if operation == "add" and count > available:
+            messages.warning(request,
+                f"Cannot add {count} passengers. Only {available} seats are available."
+            )
+            return redirect("seat_availability")
+
+        # =======================
+        # VALID CASE — Proceed
+        # =======================
+
+        if operation == "add":
+            new_available = available - count
+            new_onboard = onboard + count
+        else:
+            new_available = available + count
+            new_onboard = onboard - count
+
+        print("New available:", new_available)
+        print("New onboard:", new_onboard)
+
+        # Update Supabase
+        update_result = supabase.table("bus_schedule").update({
+            "available_seats": new_available,
+            "passengers_onboard": new_onboard
+        }).eq("id", schedule_id).execute()
+
+        print("Update result:", update_result)
+        print("--- DEBUG END ---\n")
+
+        messages.success(request, "Seat availability updated successfully!")
+        return redirect("seat_availability")
+
+    return redirect("seat_availability")
 
 
 def bus_overview(request):
@@ -609,71 +698,7 @@ def convert_time_string(value):
             return value
     return value
 
-#seat availability update
-def update_seat_availability(request):
-    if request.method == "POST":
 
-        schedule_id = request.POST.get("schedule_id")
-        operation = request.POST.get("operation")
-        count = int(request.POST.get("passenger_count"))
-
-        print("\n--- DEBUG: START UPDATE ---")
-        print("Received schedule_id:", schedule_id)
-        print("Operation:", operation)
-        print("Passenger count:", count)
-
-        # Fetch schedule row
-        schedule_resp = supabase.table("bus_schedule").select("*").eq("id", schedule_id).execute()
-        print("Schedule response:", schedule_resp)
-
-        if not schedule_resp.data:
-            messages.error(request, "Schedule not found.")
-            return redirect("seat_availability")
-
-        schedule = schedule_resp.data[0]
-
-        # Fetch bus info
-        bus_id_from_schedule = schedule["bus_id"]
-        bus_resp = supabase.table("bus").select("*").eq("id", bus_id_from_schedule).execute()
-        print("Bus response:", bus_resp)
-
-        bus = bus_resp.data[0]
-        capacity = int(bus["capacity"])
-
-        # Current values
-        available = int(schedule.get("available_seats") or capacity)
-        onboard = int(schedule.get("passengers_onboard") or 0)
-
-        print("Current available:", available)
-        print("Current onboard:", onboard)
-
-        # Perform calculation
-        if operation == "add":
-            # adding passengers
-            new_available = max(0, available - count)
-            new_onboard = min(capacity, onboard + count)
-
-        else:
-            # subtracting passengers
-            new_available = min(capacity, available + count)
-            new_onboard = max(0, onboard - count)
-
-        print("New available:", new_available)
-        print("New onboard:", new_onboard)
-
-        # Update Supabase
-        update_result = supabase.table("bus_schedule").update({
-            "available_seats": new_available,
-            "passengers_onboard": new_onboard
-        }).eq("id", schedule_id).execute()
-
-        print("Update result:", update_result)
-        print("--- DEBUG END ---\n")
-
-        messages.success(request, "Seat availability updated!")
-        return redirect("seat_availability")
-
-    return redirect("seat_availability")
 
 
 

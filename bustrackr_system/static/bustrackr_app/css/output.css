@@ -274,6 +274,10 @@
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
+  h3.mb-3.bold-spaced {
+      font-weight: bold;
+      margin-bottom: 5rem !important;
+  }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
   }
