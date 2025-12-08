@@ -50,13 +50,32 @@ def logout_view(request):
 
 # DASHBOARDS 
 def home(request):
-    schedules = Schedule.objects.all()
-    
-    buses = Bus.objects.all()
-    bus_map = {bus.id: bus for bus in buses}
-
-    for sched in schedules:
-        sched.bus = bus_map.get(sched.bus_id)
+    # Fetch schedules and buses from Supabase to get available_seats data
+    try:
+        schedules_data = supabase.table("bus_schedule").select("*").execute().data
+        buses_data = supabase.table("bus").select("*").execute().data
+        
+        # Create a map for quick bus lookup
+        bus_map = {bus['id']: bus for bus in buses_data}
+        
+        # Convert time strings and attach bus data to each schedule
+        for sched in schedules_data:
+            sched['departure_time'] = convert_time_string(sched.get('departure_time'))
+            sched['arrival_time'] = convert_time_string(sched.get('arrival_time'))
+            sched['bus'] = bus_map.get(sched.get('bus_id'))
+            
+            # Ensure available_seats has a value (default to bus capacity if not set)
+            if 'available_seats' not in sched or sched['available_seats'] is None:
+                bus = sched['bus']
+                if bus:
+                    sched['available_seats'] = bus.get('capacity', 0)
+                else:
+                    sched['available_seats'] = 0
+        
+        schedules = schedules_data
+    except Exception as e:
+        print(f"Error fetching schedules from Supabase: {e}")
+        schedules = []
 
     context = {
         'schedules': schedules
