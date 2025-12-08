@@ -1,20 +1,28 @@
 {% if messages %}
-  {% for message in messages %}
-    {% if message.tags == 'success' %}
-      <div class="alert alert-soft alert-success flex items-center gap-4 mb-3 toast-item opacity-0 -translate-y-5 transition-all duration-500" role="alert">
-        <span class="icon-[tabler--circle-check] shrink-0 size-6"></span>
-        <p><span class="text-lg font-semibold">Success:</span> {{ message }}</p>
-      </div>
-    {% elif message.tags == 'error' %}
-      <div class="alert alert-soft alert-error flex items-center gap-4 mb-3 toast-item opacity-0 -translate-y-5 transition-all duration-500" role="alert">
-        <span class="icon-[tabler--alert-triangle] shrink-0 size-6"></span>
-        <p><span class="text-lg font-semibold">Error:</span> {{ message }}</p>
-      </div>
-    {% elif message.tags == 'warning' %}
-      <div class="alert alert-soft alert-warning flex items-center gap-4 mb-3 toast-item opacity-0 -translate-y-5 transition-all duration-500" role="alert">
-        <span class="icon-[tabler--alert-triangle] shrink-0 size-6"></span>
-        <p><span class="text-lg font-semibold">Warning:</span> {{ message }}</p>
-      </div>
-    {% endif %}
-  {% endfor %}
+  <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
+    {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success toast-item opacity-0 -translate-y-5 transition-all duration-500 mb-3" role="alert">
+          <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <span><strong>Success:</strong> {{ message }}</span>
+        </div>
+      {% elif message.tags == 'error' %}
+        <div class="alert alert-error toast-item opacity-0 -translate-y-5 transition-all duration-500 mb-3" role="alert">
+          <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+          <span><strong>Error:</strong> {{ message }}</span>
+        </div>
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning toast-item opacity-0 -translate-y-5 transition-all duration-500 mb-3" role="alert">
+          <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+          <span><strong>Warning:</strong> {{ message }}</span>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
 {% endif %}

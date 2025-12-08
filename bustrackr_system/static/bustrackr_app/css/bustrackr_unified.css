@@ -1,0 +1,392 @@
+/* ===================================
+   BusTrackr Unified CSS
+   All styles for dashboard, alerts, and components
+   =================================== */
+
+/* =========================
+   GLOBAL STYLES
+   ========================= */
+body {
+  background-color: #f8f9fa !important;
+}
+
+/* =========================
+   SIDEBAR STYLES
+   ========================= */
+.sidebar {
+  height: 100vh;
+  background-color: #0a2e73;
+  color: #fff;
+  padding-top: 20px;
+  position: fixed;
+  width: 240px;
+  z-index: 1000;
+}
+
+.sidebar .nav-link {
+  color: #d9e1f2;
+  font-weight: 500;
+  margin: 8px 0;
+  border-radius: 10px;
+  padding: 10px 15px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: #173f8a;
+  color: #fff;
+}
+
+.sidebar .logout {
+  position: absolute;
+  bottom: 20px;
+  width: 90%;
+  left: 5%;
+  background-color: #1b1f2f;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .logout:hover {
+  background-color: #173f8a;
+  color: #fff;
+}
+
+/* =========================
+   MAIN CONTENT LAYOUT
+   ========================= */
+.main-content {
+  margin-left: 250px;
+  padding: 30px;
+  min-height: 100vh;
+}
+
+/* =========================
+   TOP BAR
+   ========================= */
+.top-bar {
+  background-color: #1b3fa1;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* =========================
+   CARDS & STATS
+   ========================= */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background-color: white;
+  width: 100%;
+  max-width: 100%;
+}
+
+.card-stat {
+  background-color: #19aef0;
+  color: #fff;
+  border-radius: 20px;
+  text-align: center;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-stat h3 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.card-stat-chart {
+  background-color: #1e293b;
+  border-radius: 12px;
+}
+
+/* =========================
+   TABLES
+   ========================= */
+.table-responsive-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  min-width: 600px;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.table thead {
+  background-color: #1b3fa1;
+  color: white;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #eaf3ff;
+}
+
+.bus-table {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.bus-table th {
+  background-color: #173f8a;
+  color: #fff;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+.btn-primary {
+  background-color: #19aef0;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #159ad3;
+}
+
+.btn-outline-primary {
+  color: #1b3fa1;
+  border-color: #1b3fa1;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #1b3fa1;
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* =========================
+   STATUS BADGES
+   ========================= */
+.status-badge {
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.status-on,
+.status-boarding {
+  background-color: #4CAF51;
+}
+
+.status-delay {
+  background-color: #FFC107;
+  color: #000;
+}
+
+.status-arrived {
+  background-color: #820e99;
+}
+
+.status-departed {
+  background-color: #582df5;
+}
+
+.status-cancel,
+.status-full {
+  background-color: #F44336;
+}
+
+.status-waiting {
+  background-color: #FFC107;
+}
+
+.badge.bg-success {
+  background-color: #4CAF51 !important;
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+.search-bar {
+  border: 2px solid #00a6ff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  width: 100%;
+  max-width: 350px;
+  outline: none;
+}
+
+.search-box {
+  position: relative;
+  width: 250px;
+}
+
+.search-box input {
+  border-radius: 8px;
+  padding-left: 35px;
+}
+
+.search-box i {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #1b3fa1;
+}
+
+/* =========================
+   PAGE TITLES
+   ========================= */
+.page-title {
+  color: #1b3fa1;
+  font-weight: 600;
+}
+
+/* =========================
+   ALERTS & NOTIFICATIONS
+   ========================= */
+.alerts-container {
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  pointer-events: none;
+}
+
+.alert {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  padding: 8px 20px;
+  color: #fff;
+  width: 60%;
+  max-width: 800px;
+  min-width: 400px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  animation: slideDown 0.4s ease, fadeOut 0.5s ease 3.5s forwards;
+  pointer-events: auto;
+}
+
+.alert-success {
+  background-color: #22c55e;
+}
+
+.alert-warning {
+  background-color: #f97316;
+}
+
+.alert-error {
+  background-color: #ef4444;
+}
+
+.alert .iconify {
+  font-size: 18px;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+/* Alert Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}
+
+/* =========================
+   UTILITY CLASSES
+   ========================= */
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-item {
+  margin-bottom: 10px;
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .main-content {
+    margin-left: 210px;
+    padding: 15px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .alert {
+    width: 90%;
+    min-width: 300px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
