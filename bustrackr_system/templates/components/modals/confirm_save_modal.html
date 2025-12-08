@@ -9,14 +9,17 @@
       </div>
 
       <div class="modal-body">
-        <p>Are you sure you want to save these changes?</p>
+        <!-- Dynamic message -->
+        <p id="confirmMessage">Are you sure you want to save changes?</p>
+        <!-- Hidden fields -->
+        <input type="hidden" id="formToSubmit">
+        <input type="hidden" id="modalToReopen">
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">No, Cancel</button>
+        <button class="btn btn-secondary" onclick="cancelConfirmation()">No, Cancel</button>
 
-        <!-- FINAL SUBMIT BUTTON -->
-        <button class="btn btn-primary" onclick="submitEditBusForm()">
+        <button class="btn btn-primary" onclick="submitChosenForm()">
           Yes, Save
         </button>
       </div>
