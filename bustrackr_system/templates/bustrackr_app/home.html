@@ -107,7 +107,8 @@
 
           <p class="text-sm text-gray-600">
             Departure: {{ sched.departure_time|time:"g:i A" }}<br>
-            Est. Arrival: {{ sched.arrival_time|time:"g:i A" }}
+            Est. Arrival: {{ sched.arrival_time|time:"g:i A" }}<br>
+            <span class="font-semibold text-blue-600">Available Seats: {{ sched.available_seats|default:"N/A" }}</span>
           </p>
         </div>
 
