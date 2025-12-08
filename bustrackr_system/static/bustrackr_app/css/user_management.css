@@ -9,6 +9,12 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       background-color: white;
+      overflow-x: auto; /* Prevent table from overflowing */
+      max-width: 100%; /* Ensure card doesn't exceed container */
+    }
+
+    .table {
+      min-width: 600px; /* Minimum width for table readability */
     }
 
     .table thead {

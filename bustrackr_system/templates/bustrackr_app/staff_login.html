@@ -6,11 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
   <title>BusTrackr Login</title>
  
 </head>
 <body class="bg-gray-100 font-sans">
  
+  {% include 'components/alerts.html' %}
+  
   <div class="flex h-screen">
  
     <!-- Left Panel -->
@@ -105,6 +108,7 @@
   </div>
  
   <script src="{% static 'bustrackr_app/js/login_modal.js' %}"></script>
+  <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
  
 </body>
 </html>
