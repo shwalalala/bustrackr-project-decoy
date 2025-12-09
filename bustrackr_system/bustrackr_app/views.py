@@ -10,6 +10,7 @@ from datetime import datetime
 from collections import defaultdict
 import requests
 from django.contrib import messages
+from .models import Bus
 
 #from django.http import JsonResponse
 import uuid
@@ -34,7 +35,6 @@ def staff_login_view(request):
             messages.error(request, 'Invalid staff ID or password.')
 
     return render(request, 'bustrackr_app/staff_login.html')
-
 
 #  LOGOUT VIEW
 def logout_view(request):
@@ -497,7 +497,12 @@ def update_seat_availability(request):
 def bus_overview(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
-    return render(request, 'bustrackr_app/staff_dashboard_bus_overview.html')
+
+    buses = Bus.objects.all()   # <-- REQUIRED
+
+    return render(request, 'bustrackr_app/staff_dashboard_bus_overview.html', {
+        'buses': buses
+    })
 
 def reports(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):

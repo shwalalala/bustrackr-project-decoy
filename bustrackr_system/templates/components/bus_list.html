@@ -16,16 +16,16 @@
         <table class="table table-striped align-middle mb-0">
             <thead>
                 <tr style="border-bottom: 2px solid #173f8a;">
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Plate No.</th>
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Company</th>
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Bus Type</th>
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Capacity</th>
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Status</th>
+                    <th class="table-header">Plate No.</th>
+                    <th class="table-header">Company</th>
+                    <th class="table-header">Bus Type</th>
+                    <th class="table-header">Capacity</th>
+                    <th class="table-header">Status</th>
 
                     {% if request.session.is_admin %}
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">Actions</th>
+                        <th class="table-header">Actions</th>
                     {% else %}
-                    <th style="background-color: #173f8a; color: white; padding: 12px;">—</th>
+                        <th class="table-header">—</th>
                     {% endif %}
                 </tr>
             </thead>
@@ -47,7 +47,6 @@
                             {% endif %}
                         </td>
 
-                        <!-- Admin-only ACTION BUTTONS -->
                         {% if request.session.is_admin %}
                         <td>
                             <button 
@@ -72,7 +71,6 @@
                             </button>
                         </td>
                         {% else %}
-                        <!-- Staff sees "No Actions" placeholder -->
                         <td class="text-muted text-center">—</td>
                         {% endif %}
                     </tr>
@@ -86,5 +84,4 @@
 
         </table>
     </div>
-
 </div>
