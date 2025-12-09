@@ -1,4 +1,3 @@
-<!-- Schedule Add Modal -->
 <div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -12,18 +11,20 @@
         {% csrf_token %}
         <div class="modal-body">
 
-          <!-- Bus Selection -->
           <div class="mb-3">
             <label for="addBus" class="form-label">Bus</label>
             <select id="addBus" name="bus_id" class="form-select" required>
               <option value="">Select Bus</option>
-              {% for bus in buses %}
+              
+              {% for bus in available_buses %}
                 <option value="{{ bus.id }}"> {{ bus.bus_company }} — {{ bus.plate_number }}</option>
+              {% empty %}
+                <option value="" disabled>No available buses (All assigned)</option>
               {% endfor %}
+              
             </select>
           </div>
 
-          <!-- Route Selection -->
           <div class="mb-3">
             <label for="addRoute" class="form-label">Route</label>
             <select id="addRoute" name="route" class="form-select" required>
@@ -34,19 +35,16 @@
             </select>
           </div>
 
-          <!-- Departure Time -->
           <div class="mb-3">
             <label for="addDeparture" class="form-label">Departure Time</label>
             <input type="time" id="addDeparture" name="departure_time" class="form-control" required>
           </div>
 
-          <!-- Arrival Time -->
           <div class="mb-3">
             <label for="addArrival" class="form-label">Arrival Time</label>
             <input type="time" id="addArrival" name="arrival_time" class="form-control" required>
           </div>
 
-          <!-- Status Selection -->
           <div class="mb-3">
             <label for="addStatus" class="form-label">Status</label>
             <select id="addStatus" name="status" class="form-select" required>

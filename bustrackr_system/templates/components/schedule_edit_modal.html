@@ -1,4 +1,3 @@
-<!-- Schedule Edit Modal -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" aria-labelledby="editScheduleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -12,47 +11,33 @@
         {% csrf_token %}
         <div class="modal-body">
 
-          <!-- Bus Selection -->
           <div class="mb-3">
-            <label for="editBus" class="form-label">Bus</label>
-            <select id="editBus" name="bus_id" class="form-select" required>
-              <option value="">Select Bus</option>
-              {% for bus in buses %}
-                <option value="{{ bus.id }}">{{ bus.plate_number }}</option>
-              {% endfor %}
-            </select>
+            <label class="form-label text-muted">Bus Assigned</label>
+            <input type="text" id="editBusDisplay" class="form-control bg-light" readonly>
+            <input type="hidden" id="editBusId" name="bus_id">
           </div>
 
-          <!-- Route Selection -->
           <div class="mb-3">
-            <label for="editRoute" class="form-label">Route</label>
-            <select id="editRoute" name="route" class="form-select" required>
-              <option value="">Select Route</option>
-              {% for r in routes %}
-                <option value="{{ r }}">{{ r }}</option>
-              {% endfor %}
-            </select>
+            <label class="form-label text-muted">Route</label>
+            <input type="text" id="editRoute" name="route" class="form-control bg-light" readonly>
           </div>
 
-          <!-- Departure Time -->
           <div class="mb-3">
             <label for="editDeparture" class="form-label">Departure Time</label>
             <input type="time" id="editDeparture" name="departure_time" class="form-control" required>
           </div>
 
-          <!-- Arrival Time -->
           <div class="mb-3">
             <label for="editArrival" class="form-label">Arrival Time</label>
             <input type="time" id="editArrival" name="arrival_time" class="form-control" required>
           </div>
 
-          <!-- Status Selection -->
           <div class="mb-3">
             <label for="editStatus" class="form-label">Status</label>
             <select id="editStatus" name="status" class="form-select" required>
-              {% for s in statuses %}
-                <option value="{{ s }}">{{ s }}</option>
-              {% endfor %}
+              <option value="On Time">On Time</option>
+              <option value="Delayed">Delayed</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </div>
 
