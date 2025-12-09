@@ -9,7 +9,6 @@
     "build:css": "tailwindcss -i ./bustrackr_system/static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --minify",
     "watch:css": "tailwindcss -i ./bustrackr_system/static/bustrackr_app/css/input.css -o ./static/bustrackr_app/css/output.css --watch"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pejerx/bustrackr-project-decoy.git"
@@ -23,6 +22,7 @@
   "homepage": "https://github.com/pejerx/bustrackr-project-decoy#readme",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "flyonui": "^2.4.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14"
   },

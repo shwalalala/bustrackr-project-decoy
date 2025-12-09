@@ -11,10 +11,11 @@ class AdminAccount(models.Model):
 
 
 class StaffAccount(models.Model):
-    staff_id = models.CharField(max_length=20, unique=True)
+    staff_id = models.CharField(max_length=20, unique=True, blank=True)
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
-    created_at = models.DateTimeField(auto_now_add=True)
+    #created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     @staticmethod
     def generate_staff_id():
@@ -26,7 +27,51 @@ class StaffAccount(models.Model):
     def save(self, *args, **kwargs):
         if not self.staff_id:
             self.staff_id = self.generate_staff_id()
+
+        if not self.created_at:
+            self.created_at = datetime.now()
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.staff_id})"
+
+
+class Bus(models.Model):
+    plate_number = models.CharField(max_length=50)
+    bus_company = models.CharField(max_length=100)
+    bus_type = models.CharField(max_length=50)
+    capacity = models.IntegerField()
+    status = models.CharField(max_length=50, default='Active') 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'bus'
+
+    def __str__(self):
+        return self.plate_number
+
+
+class Schedule(models.Model):
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
+    
+    route = models.CharField(max_length=100)
+    
+    departure_time = models.TimeField()
+    arrival_time = models.TimeField()
+    
+    STATUS_CHOICES = [
+        ('On Time', 'On Time'),
+        ('Delayed', 'Delayed'),
+        ('Cancelled', 'Cancelled'),
+        ('Boarding Now', 'Boarding Now'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='On Time')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.route} ({self.departure_time})"
+
+    class Meta:
+     
+        db_table = 'bus_schedule'

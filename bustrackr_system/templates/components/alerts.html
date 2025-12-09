@@ -1,15 +1,20 @@
-{% if messages %}
+<div class="alerts-container">
   {% for message in messages %}
-    {% if message.tags == 'success' %}
-      <div class="alert alert-soft alert-success flex items-center gap-4 mb-3" role="alert">
-        <span class="icon-[tabler--circle-check] shrink-0 size-6"></span>
-        <p><span class="text-lg font-semibold">Success:</span> {{ message }}</p>
-      </div>
-    {% elif message.tags == 'error' or message.tags == 'warning' %}
-      <div class="alert alert-soft alert-warning flex items-center gap-4 mb-3" role="alert">
-        <span class="icon-[tabler--alert-triangle] shrink-0 size-6"></span>
-        <p><span class="text-lg font-semibold">Warning:</span> {{ message }}</p>
-      </div>
-    {% endif %}
+    <div class="alert {% if message.tags == 'success' %}alert-success
+                      {% elif message.tags == 'error' %}alert-error
+                      {% elif message.tags == 'warning' %}alert-warning
+                      {% endif %}">
+      
+      <!-- Icon -->
+      {% if message.tags == "success" %}
+        <span class="iconify" data-icon="tabler:circle-check"></span>
+      {% elif message.tags == "error" %}
+        <span class="iconify" data-icon="tabler:alert-octagon"></span>
+      {% elif message.tags == "warning" %}
+        <span class="iconify" data-icon="tabler:alert-triangle"></span>
+      {% endif %}
+
+      <span class="alert-text">{{ message }}</span>
+    </div>
   {% endfor %}
-{% endif %}
+</div>

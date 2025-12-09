@@ -5,151 +5,201 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BusTrackr Cebu - Admin Dashboard</title>
-
-  <!-- Bootstrap -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <!-- Custom Styles -->
+  <!-- FlyonUI CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/flyonui@2.4.1/dist/css/flyonui.min.css" rel="stylesheet">
+  
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
-  <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/bustrackr_unified.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
+  
+  <style>
+    /* Dark Card Style for Reports */
+    .report-card-dark {
+        background-color: #1e293b; 
+        color: white; 
+        border-radius: 12px;
+    }
+    .legend-dot {
+        width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+    }
+  </style>
 </head>
 
 <body class="bg-white">
 
-  <!-- Sidebar -->
   {% include 'components/sidebar.html' %}
 
-  <!-- Alerts -->
-  {% include 'components/alerts.html' %}
-
-  <!-- MAIN CONTENT -->
   <div class="main-content p-4">
-
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#registerBusModal">
-      <i class="bi bi-bus-front me-1"></i> Register Bus
-    </button>
-
+    {% include 'components/alerts.html' %}
+    
     {% include 'components/register_bus.html' %}
+    
+    {% include 'components/bus_management_overview.html' %}
+    
+    {% include 'components/modals/edit_bus_modal.html' %}
+    {% include 'components/modals/confirm_save_modal.html' %}
+    {% include 'components/modals/confirm_register_bus_modal.html' %}
+    {% include 'components/modals/confirm_delete_bus_modal.html' %}
+    {% include 'components/bus_list.html' %}
 
-    {% include 'components/dashboard_overview.html' %}
+    <h5 class="fw-bold mb-3">Analytics & Reports</h5>
 
-    <div class="card p-3 bus-table">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">Bus List</h5>
-      </div>
+    <div class="row align-items-stretch">
+        <div class="col-md-8 mb-4 d-flex">
+          <div class="card-stat-chart p-4 text-center flex-fill h-100 report-card-dark">
+            <h5 class="fw-semibold mb-3">Trip Status Overview</h5>
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="tripStatusChart"></canvas>
+            </div>
+            <p class="mt-3 mb-0 text-white-50">Data based on current schedules</p>
+          </div>
+        </div>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Plate No.</th>
-            <th>Company</th>
-            <th>Bus Type</th>
-            <th>Capacity</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <div class="col-md-4 mb-4 d-flex">
+          <div class="card-stat-chart p-4 flex-fill h-100 report-card-dark">
+            <h5 class="fw-semibold mb-3">Status Breakdown</h5>
 
-        <tbody>
-          {% if buses %}
-            {% for bus in buses %}
-            <tr>
-              <td>{{ bus.plate_number }}</td>
-              <td>{{ bus.bus_company }}</td>
-              <td>{{ bus.bus_type }}</td>
-              <td>{{ bus.capacity }}</td>
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="legend-dot bg-success me-2"></span>
+              <div class="flex-grow-1">On Time</div>
+              <div class="text-white-50">{{ status_counts.OnTime|default:"0" }} trips</div>
+            </div>
 
-              <td>
-                {% if bus.status == "Active" %}
-                  <span class="badge bg-success">Active</span>
-                {% else %}
-                  <span class="badge bg-secondary">Inactive</span>
-                {% endif %}
-              </td>
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="legend-dot bg-warning me-2"></span>
+              <div class="flex-grow-1">Delayed</div>
+              <div class="text-white-50">{{ status_counts.Delayed|default:"0" }} trips</div>
+            </div>
 
-              <td class="d-flex gap-2">
-                <button 
-                  type="button"
-                  class="btn btn-sm btn-outline-primary"
-                  onclick="openEditBusModal(
-                      '{{ bus.id }}',
-                      '{{ bus.plate_number }}',
-                      '{{ bus.bus_company }}',
-                      '{{ bus.bus_type }}',
-                      '{{ bus.capacity }}',
-                      '{{ bus.status }}'
-                  )">
-                  <i class="bi bi-pencil"></i>
-                </button>
+            <div class="legend-item d-flex align-items-center mb-3">
+              <span class="legend-dot bg-danger me-2"></span>
+              <div class="flex-grow-1">Cancelled</div>
+              <div class="text-white-50">{{ status_counts.Cancelled|default:"0" }} trips</div>
+            </div>
 
-                <a href="{% url 'delete_bus' bus.id %}" 
-                   class="btn btn-sm btn-outline-danger"
-                   onclick="openDeleteBusModal('{{ bus.id }}')">
-                  <i class="bi bi-trash"></i>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="6" class="text-center text-muted">No buses found</td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
+            <hr class="border-secondary">
+            <div class="text-white-50 text-center mt-3">
+                Total Schedules: <strong>{{ total_tracked }}</strong>
+            </div>
+          </div>
+        </div>
     </div>
-  </div>
 
-  <!-- INCLUDE MODALS -->
-  {% include 'components/modals/edit_bus_modal.html' %}
-  {% include 'components/modals/confirm_save_modal.html' %}
-  {% include 'components/modals/confirm_register_bus_modal.html' %}
-  {% include 'components/modals/confirm_delete_bus_modal.html' %}
+    <div class="card p-3 bus-table mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0 fw-semibold">Route Performance</h5>
+          <div>
+            <button class="btn btn-light btn-sm me-2">Today</button>
+          </div>
+        </div>
 
-  <!-- Bootstrap JS -->
+        <table class="table mb-0 table-striped">
+          <thead>
+            <tr>
+              <th>Route</th>
+              <th>Total Trips</th>
+              <th>Buses Assigned</th>
+              <th>Total Passengers</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if route_performance %}
+                {% for route in route_performance %}
+                <tr>
+                  <td class="fw-bold text-primary">{{ route.name }}</td>
+                  <td>{{ route.trips }}</td>
+                  <td>{{ route.unique_buses }}</td>
+                  <td>{{ route.passengers }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No schedule data available yet.</td>
+                </tr>
+            {% endif %}
+          </tbody>
+        </table>
+    </div>
+
+  </div> 
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
+
+  {{ chart_labels|json_script:"chart-labels-data" }}
+  {{ chart_data|json_script:"chart-data-data" }}
 
   <script>
-    // EDIT BUS MODAL
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('tripStatusChart');
+        if (ctx) {
+            // 2. READ DATA SAFELY IN JAVASCRIPT
+            // Using try-catch to be extra safe
+            try {
+                const labels = JSON.parse(document.getElementById('chart-labels-data').textContent);
+                const data = JSON.parse(document.getElementById('chart-data-data').textContent);
+
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels, 
+                        datasets: [{
+                            label: 'Trips',
+                            data: data, 
+                            backgroundColor: [
+                                '#198754', // Green
+                                '#ffc107', // Yellow
+                                '#dc3545'  // Red
+                            ],
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            barPercentage: 0.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#cbd5e1', stepSize: 1 }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#cbd5e1' }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading chart data:", error);
+            }
+        }
+    });
+
+    // --- Modal Functions ---
     function openEditBusModal(id, plate, company, type, capacity, status) {
       document.getElementById("editBusForm").action = "/edit-bus/" + id + "/";
-
       document.getElementById("editBusPlate").value = plate;
       document.getElementById("editBusCompany").value = company;
       document.getElementById("editBusType").value = type;
-
       document.getElementById("editBusCapacity").value = capacity;
       document.getElementById("editBusStatus").value = status;
-
-      var modal = new bootstrap.Modal(document.getElementById('edit_bus'));
-      modal.show();
+      new bootstrap.Modal(document.getElementById('edit_bus')).show();
     }
-
-    function openConfirmSaveModal() {
-      var modal = new bootstrap.Modal(document.getElementById('confirmSaveModal'));
-      modal.show();
-    }
-
-    function submitEditBusForm() {
-      document.getElementById("editBusForm").submit();
-    }
-
-    // REGISTER CONFIRMATION
-    function openConfirmRegisterModal() {
-        let confirmModal = new bootstrap.Modal(document.getElementById('confirmRegisterBusModal'));
-        confirmModal.show();
-    }
-
-    function submitRegisterBus() {
-        document.querySelector('#registerBusModal form').submit();
-    }
-
-    // DELETE CONFIRMATION
+    function submitEditBusForm() { document.getElementById("editBusForm").submit(); }
+    function openConfirmRegisterModal() { new bootstrap.Modal(document.getElementById('confirmRegisterBusModal')).show(); }
+    function submitRegisterBus() { document.querySelector('#registerBusModal form').submit(); }
     function openDeleteBusModal(id) {
         document.getElementById("deleteBusBtn").href = "/delete-bus/" + id + "/";
-        var modal = new bootstrap.Modal(document.getElementById('confirmDeleteBus'));
-        modal.show();
+        new bootstrap.Modal(document.getElementById('confirmDeleteBus')).show();
     }
   </script>
 

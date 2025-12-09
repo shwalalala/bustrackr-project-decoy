@@ -1,0 +1,79 @@
+/* Centered floating container */
+.alerts-container {
+  position: fixed;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  pointer-events: none;
+}
+
+.alert {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  padding: 8px 20px;
+  color: #fff;
+  width: 60%;
+  max-width: 800px;
+  min-width: 400px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  /* SOLID alert (no initial fading) */
+  opacity: 1;
+
+  transition: opacity 0.5s ease, transform 0.5s ease;
+
+  /* Fade ends at 40% opacity instead of disappearing */
+  animation: slideDown 0.4s ease, fadeOut 0.5s ease 3.5s forwards;
+}
+
+/* Color styles */
+.alert-success {
+  background-color: #22c55e; /* Green */
+}
+
+.alert-warning {
+  background-color: #f97316; /* Orange */
+}
+
+.alert-error {
+  background-color: #dc2626; /* Red */
+}
+
+/* Iconify icon style */
+.alert .iconify {
+  font-size: 18px;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+/* Slide in from top */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Fade out — stop at 0.4 opacity instead of disappearing */
+@keyframes fadeOut {
+  to {
+    opacity: 0.4;
+    transform: translate(-50%, -20px);
+  }
+}

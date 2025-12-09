@@ -10,9 +10,11 @@
       <div class="modal-body">
         <!-- Edit Staff Form -->
         <!-- Form action is dynamically set by JS in admin_user_management.html -->
-        <form method="POST" action="{% url 'edit_staff' %}">
+        <form method="POST" id="editStaffForm">
 
           {% csrf_token %}
+          
+          <input type="hidden" id="editStaffId" name="staff_id">
 
           
           <div class="mb-3">

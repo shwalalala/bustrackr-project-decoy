@@ -34,5 +34,7 @@ urlpatterns = [
     path("schedule/add/", views.create_schedule, name="create_schedule"),
     path("schedule/edit/<str:id>/", views.edit_schedule, name="edit_schedule"),
     path("schedule/delete/<str:id>/", views.delete_schedule, name="delete_schedule"),
+    path('edit-staff/<str:staff_id>/', views.edit_staff_view, name='edit_staff'),
+    path("delete-staff/<str:staff_id>/", views.delete_staff_view, name="delete_staff"),
 
 ]
