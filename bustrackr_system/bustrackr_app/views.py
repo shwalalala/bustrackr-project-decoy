@@ -615,11 +615,19 @@ def schedule_management(request):
         return redirect('staff_login')
 
     try:
+        # Fetch raw data
         buses = supabase.table("bus").select("*").execute().data
         schedules = supabase.table("bus_schedule").select("*").execute().data
     except Exception as e:
         print("Error:", e)
         buses, schedules = [], []
+
+    # --- LOGIC: Filter out buses that are already scheduled ---
+    # 1. Get a list of Bus IDs that currently have a schedule
+    scheduled_bus_ids = [s['bus_id'] for s in schedules]
+
+    # 2. Create a new list called 'available_buses' excluding the ones above
+    available_buses = [b for b in buses if b['id'] not in scheduled_bus_ids]
 
     routes = [
         "Cebu - Toledo",
@@ -631,7 +639,8 @@ def schedule_management(request):
     statuses = ["On Time", "Delayed", "Cancelled"]
 
     return render(request, 'bustrackr_app/staff_dashboard_schedule.html', {
-        "buses": buses,
+        "buses": buses,             # Keeps the main table working (showing all bus names)
+        "available_buses": available_buses, # NEW: Only for the "Add Schedule" modal
         "schedules": schedules,
         "routes": routes,
         "statuses": statuses
@@ -674,9 +683,9 @@ def create_schedule(request):
 
 def edit_schedule(request, id):
     if request.method == "POST":
+        # LOGIC: Only update specific fields (Time & Status)
+        # We DO NOT include 'bus_id' or 'route' here
         updated = {
-            "bus_id": int(request.POST.get("bus_id")),
-            "route": request.POST.get("route"),
             "departure_time": request.POST.get("departure_time"),
             "arrival_time": request.POST.get("arrival_time"),
             "status": request.POST.get("status"),
