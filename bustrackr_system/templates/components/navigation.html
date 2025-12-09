@@ -8,9 +8,9 @@
       
     </div>
     <ul class="flex space-x-10 text-base font-medium">
-      <li><a href="#" class="hover:text-blue-400 transition-colors duration-300">Home</a></li>
+      <li><a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors duration-300">Home</a></li>
       <li><a href="{% url 'about' %}" class="hover:text-blue-400 transition-colors duration-300">About</a></li>      
-      <li><a href="#" class="hover:text-blue-400 transition-colors duration-300">Contact Us</a></li>
+      <li><a href="{% url 'contact_us' %}" class="hover:text-blue-400 transition-colors duration-300">Contact Us</a></li>      
     </ul>
   </div>
 </nav>

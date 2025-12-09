@@ -598,6 +598,10 @@ def bus_management(request):
 
     return render(request, 'bustrackr_app/admin_bus_schedule.html', context)
 
+def contact_views(request):
+    return render(request, "bustrackr_app/user_contact_us.html")
+
+
 @login_required(login_url='staff_login')
 def staff_dashboard(request):
     if not request.session.get('staff_id'):

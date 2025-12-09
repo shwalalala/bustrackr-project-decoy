@@ -14,37 +14,47 @@
 <body class="bg-gray-50 text-gray-900">
     {% include 'components/navigation.html' %}
 
-<div class="sm:flex items-center max-w-screen-xl mx-auto py-16 px-6">
+<div class="max-w-screen-xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-2 gap-12 items-center">
+    
     <!-- Image -->
-    <div class="sm:w-1/2 p-10">
-        <div class="image object-center text-center">
-            <img src="{% static 'bustrackr_app/images/bus_overview.jpg' %}" class="rounded-xl shadow-lg">
-        </div>
+    <div class="relative group">
+        <div class="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-xl scale-105 group-hover:scale-110 transition-transform duration-700"></div>
+        <img src="{% static 'bustrackr_app/images/bus_overview.jpg' %}" 
+             class="relative rounded-2xl shadow-xl transform group-hover:scale-105 transition duration-500">
     </div>
 
-    <!-- Text -->
-    <div class="sm:w-1/2 p-5">
-        <div class="text">
-            <span class="text-gray-500 border-b-2 border-indigo-600 uppercase">About BusTrackr</span>
+    <!-- Text Content -->
+    <div class="space-y-6 mt-10">
+        <span class="text-sm tracking-widest text-black font-semibold uppercase">
+            About BusTrackr
+        </span>
 
-            <h2 class="my-4 font-bold text-3xl sm:text-4xl">
-                About <span class="text-indigo-600">Our System</span>
-            </h2>
+        <h2 class="font-extrabold text-4xl sm:text-5xl leading-tight">
+            Empowering <span class="text-white">Smarter Transportation</span>
+        </h2>
 
-            <p class="text-gray-700 leading-relaxed">
-                BusTrackr is designed to provide commuters and transport operators with  
-                real-time visibility, accurate arrival estimates, and efficient monitoring  
-                of bus operations. Our goal is to modernize transportation through  
-                seamless digital tools that enhance reliability and safety.
-            </p>
+        <p class="text-gray-600 text-lg leading-relaxed">
+            BusTrackr transforms everyday commuting by delivering 
+            <span class="font-semibold text-gray-800">real-time tracking</span>, 
+            <span class="font-semibold text-gray-800">accurate travel updates</span>, 
+            and streamlined monitoring for both passengers and transport operators.  
+            Our mission is to build a reliable and modern digital system that improves mobility,
+            enhances safety, and keeps communities connected.
+        </p>
 
-            <a href="{% url 'home' %}"
-               class="inline-block mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow">
-                Explore BusTrackr
-            </a>
-        </div>
+        <a href="{% url 'home' %}"
+           class="inline-flex items-center px-7 py-3 bg-blue-600 hover:bg-indigo-700 text-white font-semibold 
+                  rounded-xl shadow-lg transition-all duration-300 hover:shadow-indigo-300/50">
+            Explore BusTrackr
+            <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+        </a>
     </div>
 </div>
+
 
 <section class="py-24 bg-white">
     <h2 class="text-4xl font-extrabold text-center mb-16">Meet the Developers</h2>
@@ -56,9 +66,6 @@
             <button id="dropdownButton1" data-dropdown-toggle="dropdown1"
                     class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
                 <span class="sr-only">Open dropdown</span>
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
-                </svg>
             </button>
 
             <div id="dropdown1" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
@@ -73,8 +80,8 @@
                 <img class="w-24 h-24 mb-6 rounded-full object-cover"
                     src="{% static 'bustrackr_app/images/dev_jershe.jpg' %}" alt="Developer 1">
 
-                <h5 class="text-xl font-semibold tracking-tight">Developer Name 1</h5>
-                <span class="text-sm text-body">Backend Developer</span>
+                <h5 class="text-xl font-semibold tracking-tight">Jersheville Reshae Garol</h5>
+                <span class="text-sm text-body">Developer</span>
             </div>
         </div>
 
@@ -83,9 +90,6 @@
             <button id="dropdownButton2" data-dropdown-toggle="dropdown2"
                     class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
                 <span class="sr-only">Open dropdown</span>
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
-                </svg>
             </button>
 
             <div id="dropdown2" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
@@ -100,8 +104,8 @@
                 <img class="w-24 h-24 mb-6 rounded-full object-cover"
                     src="{% static 'bustrackr_app/images/dev_sheena.png' %}" alt="Developer 2">
 
-                <h5 class="text-xl font-semibold tracking-tight">Developer Name 2</h5>
-                <span class="text-sm text-body">Frontend Developer</span>
+                <h5 class="text-xl font-semibold tracking-tight">Sheena Mae Jaquez</h5>
+                <span class="text-sm text-body">Developer</span>
             </div>
         </div>
 
@@ -110,9 +114,7 @@
             <button id="dropdownButton3" data-dropdown-toggle="dropdown3"
                     class="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft border border-transparent hover:bg-neutral-tertiary rounded-base p-1.5">
                 <span class="sr-only">Open dropdown</span>
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m6 0h.01"/>
-                </svg>
+                
             </button>
 
             <div id="dropdown3" class="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 hidden">
@@ -125,10 +127,10 @@
 
             <div class="flex flex-col items-center">
                 <img class="w-24 h-24 mb-6 rounded-full object-cover"
-                    src="{% static 'bustrackr_app/images/dev3.jpg' %}" alt="Developer 3">
+                    src="{% static 'bustrackr_app/images/dev_karyll.jpg' %}" alt="Developer 3">
 
-                <h5 class="text-xl font-semibold tracking-tight">Developer Name 3</h5>
-                <span class="text-sm text-body">System Analyst</span>
+                <h5 class="text-xl font-semibold tracking-tight">Karyll Lei Guia</h5>
+                <span class="text-sm text-body">Developer</span>
             </div>
         </div>
 
@@ -145,7 +147,7 @@
 
     <ul class="basis-1/2">
 
-        <!-- FAQ Item 1 -->
+     
         <li>
             <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
                     aria-expanded="false" onclick="toggleFAQ(this)">
@@ -163,7 +165,6 @@
             </div>
         </li>
 
-        <!-- FAQ Item 2 -->
         <li>
             <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
                     aria-expanded="false" onclick="toggleFAQ(this)">
@@ -181,7 +182,6 @@
             </div>
         </li>
 
-        <!-- FAQ Item 3 -->
         <li>
             <button class="relative flex gap-2 items-center w-full py-5 text-lg font-semibold border-t border-gray-200 text-left"
                     aria-expanded="false" onclick="toggleFAQ(this)">
@@ -202,17 +202,7 @@
     </ul>
 </div>
 {% include 'components/footer.html' %}
-
-
-<!-- FAQ Script -->
-<script>
-function toggleFAQ(button) {
-    const content = button.nextElementSibling;
-    const expanded = button.getAttribute("aria-expanded") === "true";
-    button.setAttribute("aria-expanded", expanded ? "false" : "true");
-    content.style.maxHeight = expanded ? "0" : content.scrollHeight + "px";
-}
-</script>
+<script src="{% static 'bustrackr_app/js/FAQ.js' %}"></script>
 
 </body>
 </html>
