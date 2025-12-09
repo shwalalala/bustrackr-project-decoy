@@ -4,11 +4,30 @@
       font-weight: 600;
     }
 
+    .table-responsive-wrapper {
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
     .card {
       border: none;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       background-color: white;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+      min-width: 600px; /* Minimum width for table readability */
+      margin-bottom: 0;
+      width: 100%;
     }
 
     .table thead {

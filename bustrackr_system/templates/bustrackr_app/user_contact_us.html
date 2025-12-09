@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact – BusTrackr Cebu</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'bustrackr_app/css/contact_us.css' %}">
+
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- MAIN CONTACT SECTION -->
+    <div class="contact-container mt-20">
+        <div class="contact-grid border">
+
+            <!-- LEFT PANEL -->
+            <div class="contact-left">
+                <a href="{% url 'home' %}" class="mx-auto mb-6">
+                    <p><</p>
+                </a>
+                
+                <h3 class="text-3xl sm:text-4xl leading-normal font-extrabold tracking-tight">
+                    Get In <span class="text-indigo-600">Touch</span>
+                </h3>
+
+                <p class="mt-4 leading-7 text-gray-200">
+                    BusTrackr is committed to improving daily transportation through real-time tracking, 
+                    reliable route information, and seamless coordination between passengers, drivers, and 
+                    operators.
+                </p>
+
+                <!-- ADDRESS -->
+                <div class="flex items-center mt-5">
+                    <svg class="contact-icon" fill="currentColor" viewBox="0 0 489.536 489.536">
+                        <path d="m488.554,476l-99-280.2c-1-4.2-5.2-7.3-9.4-7.3h-45.6c12.9-31.1 
+                        19.6-54.9 19.6-70.8 0-64.6-50-117.7-112.5-117.7-61.5,0-112.5,52.1-112.5,
+                        117.7 0,17.6 8.2,43.1 19.9,70.8h-39.7c-4.2,0-8.3,3.1-9.4,7.3l-99,280.2
+                        c-3.2,10.3 6.3,13.5 9.4,13.5h468.8c4.2,0.5 12.5-4.2 9.4-13.5z" />
+                    </svg>
+                    <span class="text-sm">Cebu Institute of - Technology</span>
+                </div>
+
+                <!-- PHONE -->
+                <div class="flex items-center mt-5">
+                    <svg class="contact-icon" fill="currentColor" viewBox="0 0 60 60">
+                        <path d="M59.002,37.992c-3.69,0-6.693-3.003-6.693-6.693c0-0.553-0.447-1-1-1s-1,
+                        0.447-1,1C50.309,36.093,54.208,39.992,59.002,39.992z" />
+                    </svg>
+                    <span class="text-sm">+93 749 99 65 50</span>
+                </div>
+
+                <!-- HOURS -->
+                <div class="flex items-center mt-5">
+                    <svg class="contact-icon" fill="currentColor" viewBox="0 0 300.988 300.988">
+                        <path d="M150.494,0C67.511,0,0,67.511,0,150.494C0,233.476,67.511,300.987,
+                        150.494,300.987C233.476,300.987,300.987,233.476,300.987,150.494C300.987,
+                        67.511,233.476,0,150.494,0z" />
+                    </svg>
+                    <span class="text-sm">24/7</span>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL (FORM) -->
+            <form class="contact-form">
+
+                <!-- NAME FIELDS -->
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label for="first-name">First Name</label>
+                        <input id="first-name" type="text" placeholder="Jane">
+                        <p class="contact-error">Please fill out this field.</p>
+                    </div>
+
+                    <div class="w-full md:w-1/2 px-3">
+                        <label for="last-name">Last Name</label>
+                        <input id="last-name" type="text" placeholder="Doe">
+                    </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full px-3">
+                        <label for="email">Email Address</label>
+                        <input id="email" type="email" placeholder="example@email.com">
+                    </div>
+                </div>
+
+                <!-- MESSAGE -->
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full px-3">
+                        <label>Your Message</label>
+                        <textarea rows="10"></textarea>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="flex justify-between w-full px-3 mt-2">
+                        <label class="contact-newsletter flex items-center">
+                            <input type="checkbox">
+                            <span class="text-sm">Send me your newsletter!</span>
+                        </label>
+
+                        <button class="contact-submit" type="submit">Send Message</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    {% include 'components/footer.html' %}
+</body>
+</html>

@@ -1,20 +1,45 @@
-@import "tailwindcss";
 
-/* Left Panel */
 .left-panel {
-  background: #1e3a8a; /* Tailwind blue-900 */
+  position: relative;
   color: white;
+  overflow: hidden;
 }
 
-/* Role Cards */
+
+.left-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/static/bustrackr_app/images/bus_bg.jpg"); 
+  background-size: cover;
+  background-position: center;
+  opacity: 0.30;
+  z-index: 0;
+}
+
+.left-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #1e3a8a;
+  opacity: 0.50;
+  z-index: 1;
+}
+
+.left-panel-content {
+  position: relative;
+  z-index: 10;
+}
+
 .role-card {
   background: white;
   color: #1e3a8a;
-  font-weight: 600;
   padding: 20px 30px;
   border-radius: 12px;
-  width: 150px;
   text-align: center;
+  width: 150px;
+  cursor: pointer;
+  font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -24,10 +49,15 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Login Box */
+
 .login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
 }
+
 
 .login-form {
   display: flex;
@@ -40,11 +70,11 @@
   border: 1px solid #d1d5db;
   border-radius: 8px;
   outline: none;
-  transition: border 0.2s;
+  transition: border 0.2s ease;
 }
 
 .login-form input:focus {
-  border-color: #2563eb;
+  border-color: #2563eb; 
 }
 
 .form-label {
@@ -52,16 +82,21 @@
   font-weight: 600;
 }
 
-/* Submit Button */
+
 .submit-btn {
+  background: #2563eb;
   color: white;
   padding: 12px;
   border-radius: 8px;
   font-weight: bold;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
 }
 
-/* Animations */
+.submit-btn:hover {
+  background: #1d4ed8;
+}
+
+
 .hidden-slide {
   display: none;
 }
@@ -70,3 +105,4 @@
   display: flex;
   flex-direction: column;
 }
+

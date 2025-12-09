@@ -17,5 +17,6 @@ urlpatterns = [
     path("user-management/", views.user_management, name="user_management"),
     path("bus-management/", views.bus_management, name="bus_management"),    
     path("seat/update/", views.update_seat_availability, name="update_seat"),
+    path("contact_us/", views.contact_views, name="contact_us"),
 
 ]

@@ -1,58 +1,80 @@
-
 {% load static %}
 
 <!-- Sidebar -->
 {% if request.session.is_admin %}
-  <div class="sidebar d-flex flex-column">
+<div class="sidebar d-flex flex-column">
     <h4 class="text-center mb-2">BusTrackr Cebu</h4>
     <small class="text-center text-light mb-4">Admin Dashboard</small>
 
     <nav class="nav flex-column px-3">
-      <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.path == '/admin_dashboard/' %}active{% endif %}">
-        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-      </a>
 
-      <a href="{% url 'user_management' %}" class="nav-link {% if request.path == '/user-management/' %}active{% endif %}">
-        <i class="bi bi-people-fill me-2"></i>User Management
-      </a>
-      <a href="{% url 'bus_management' %}" class="nav-link {% if request.path == '/bus-schedule/' %}active{% endif %}">
-        <i class="bi bi-calendar3 me-2"></i>Bus Management
-      </a>
-      <a href="{% url 'seat_availability' %}" class="nav-link {% if request.path == '/seat-availability/' %}active{% endif %}">
-        <i class="bi bi-people me-2"></i>Seat Availability
-      </a>
-      
+        <!-- Dashboard -->
+        <a href="{% url 'admin_dashboard' %}" 
+           class="nav-link {% if 'admin_dashboard' in request.path %}active{% endif %}">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+
+        <!-- User Management -->
+        <a href="{% url 'user_management' %}" 
+           class="nav-link {% if 'user-management' in request.path %}active{% endif %}">
+            <i class="bi bi-people-fill me-2"></i>User Management
+        </a>
+
+        <!-- Bus Management -->
+        <a href="{% url 'bus_management' %}" 
+           class="nav-link {% if 'bus-schedule' in request.path %}active{% endif %}">
+            <i class="bi bi-calendar3 me-2"></i>Bus Management
+        </a>
+
+        <!-- Seat Availability -->
+        <a href="{% url 'seat_availability' %}" 
+           class="nav-link {% if 'seat-availability' in request.path %}active{% endif %}">
+            <i class="bi bi-people me-2"></i>Seat Availability
+        </a>
+
     </nav>
 
     <a href="{% url 'logout' %}" class="logout">
-      <i class="bi bi-box-arrow-right me-2"></i>Logout
-    </a>  
-  </div>
+        <i class="bi bi-box-arrow-right me-2"></i>Logout
+    </a>
+</div>
 
 {% else %}
-  <!-- Existing Staff Sidebar -->
-  <div class="sidebar d-flex flex-column">
+<!-- STAFF SIDEBAR -->
+<div class="sidebar d-flex flex-column">
     <h4 class="text-center mb-2">BusTrackr Cebu</h4>
     <small class="text-center text-light mb-4">Staff Dashboard</small>
-    
+
     <nav class="nav flex-column px-3">
-      <a href="{% url 'staff_dashboard' %}" class="nav-link {% if request.path == '/staff_dashboard/' %}active{% endif %}">
-        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-      </a>
-      <a href="{% url 'schedule_management' %}" class="nav-link {% if request.path == '/schedule-management/' %}active{% endif %}">
-        <i class="bi bi-calendar-check me-2"></i>Schedule Management
-      </a>
-      <a href="{% url 'seat_availability' %}" class="nav-link {% if request.path == '/seat-availability/' %}active{% endif %}">
-        <i class="bi bi-people me-2"></i>Seat Availability
-      </a>
-      <a href="{% url 'bus_overview' %}" class="nav-link {% if request.path == '/bus-overview/' %}active{% endif %}">
-        <i class="bi bi-bus-front me-2"></i>Bus Overview
-      </a>
-      
+
+        <!-- Dashboard -->
+        <a href="{% url 'staff_dashboard' %}" 
+           class="nav-link {% if 'staff_dashboard' in request.path %}active{% endif %}">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+
+        <!-- Schedule Management -->
+        <a href="{% url 'schedule_management' %}" 
+           class="nav-link {% if 'schedule-management' in request.path %}active{% endif %}">
+            <i class="bi bi-calendar-check me-2"></i>Schedule Management
+        </a>
+
+        <!-- Seat Availability -->
+        <a href="{% url 'seat_availability' %}" 
+           class="nav-link {% if 'seat-availability' in request.path %}active{% endif %}">
+            <i class="bi bi-people me-2"></i>Seat Availability
+        </a>
+
+        <!-- Bus Overview -->
+        <a href="{% url 'bus_overview' %}" 
+           class="nav-link {% if 'bus-overview' in request.path %}active{% endif %}">
+            <i class="bi bi-bus-front me-2"></i>Bus Overview
+        </a>
+
     </nav>
 
     <a href="{% url 'logout' %}" class="logout">
-      <i class="bi bi-box-arrow-right me-2"></i>Logout
-    </a>  
-  </div>
+        <i class="bi bi-box-arrow-right me-2"></i>Logout
+    </a>
+</div>
 {% endif %}

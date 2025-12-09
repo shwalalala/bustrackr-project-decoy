@@ -93,17 +93,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// UPDATED JAVASCRIPT
+// FIXED FUNCTION: Accepts 7 arguments to match the HTML button
 function openEditSchedule(id, busId, busName, route, dep, arr, status) {
   // 1. Set Form Action
   document.getElementById("editScheduleForm").action = "/schedule/edit/" + id + "/";
   
-  // 2. Set Read-Only Fields
-  document.getElementById("editBusId").value = busId;       
-  document.getElementById("editBusDisplay").value = busName; // Shows "Ceres - FAD..."
-  document.getElementById("editRoute").value = route;     
+  // 2. Set Read-Only Fields (Name & Route)
+  document.getElementById("editBusId").value = busId;       // Hidden Value
+  document.getElementById("editBusDisplay").value = busName; // Visible Text
+  document.getElementById("editRoute").value = route;
 
-  // 3. Set Editable Fields
+  // 3. Set Editable Fields (Time & Status)
   document.getElementById("editDeparture").value = dep;
   document.getElementById("editArrival").value = arr;
   document.getElementById("editStatus").value = status;

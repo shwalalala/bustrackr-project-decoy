@@ -9,6 +9,8 @@ from supabase import create_client
 from datetime import datetime
 from collections import defaultdict
 import requests
+from django.contrib import messages
+
 #from django.http import JsonResponse
 import uuid
 
@@ -36,7 +38,7 @@ def staff_login_view(request):
 
 #  LOGOUT VIEW
 def logout_view(request):
-    """Logs out both admin and staff users and clears session data."""
+    
     # Clear all session data
     for key in list(request.session.keys()):
         del request.session[key]
@@ -48,29 +50,92 @@ def logout_view(request):
 
 # DASHBOARDS 
 def home(request):
-    schedules = Schedule.objects.all()
-    
-    buses = Bus.objects.all()
-    bus_map = {bus.id: bus for bus in buses}
+   
+    search = request.GET.get("search", "").strip()
+    terminal = request.GET.get("terminal", "").strip()
+    route = request.GET.get("route", "").strip()
+    departure_period = request.GET.get("departure", "").strip()
+    status = request.GET.get("status", "").strip()
 
-    for sched in schedules:
-        sched.bus = bus_map.get(sched.bus_id)
+    try:
+        # Fetch from Supabase
+        schedules_data = supabase.table("bus_schedule").select("*").execute().data
+        buses_data = supabase.table("bus").select("*").execute().data
 
-    context = {
-        'schedules': schedules
-    }
-    
-    return render(request, 'bustrackr_app/home.html', context)
+        # Map buses by ID
+        bus_map = {bus['id']: bus for bus in buses_data}
+
+        # Convert each schedule row
+        clean_schedules = []
+        for sched in schedules_data:
+
+            # Attach bus
+            sched['bus'] = bus_map.get(sched.get('bus_id'))
+
+            # Convert times safely
+            sched['departure_time'] = convert_time_string(sched.get('departure_time'))
+            sched['arrival_time'] = convert_time_string(sched.get('arrival_time'))
+
+            # Ensure available seats
+            if not sched.get("available_seats"):
+                bus = sched['bus']
+                sched['available_seats'] = bus.get("capacity", 0) if bus else 0
+
+            clean_schedules.append(sched)
+
+        schedules = clean_schedules
+
+        if search:
+            schedules = [
+                s for s in schedules
+                if search.lower() in s["route"].lower()
+                or (s["bus"] and search.lower() in s["bus"]["bus_company"].lower())
+                or (s["bus"] and search.lower() in s["bus"]["plate_number"].lower())
+            ]
+
+        # Terminal filter
+        if terminal and terminal != "All Terminal":
+            schedules = [s for s in schedules if s.get("terminal") == terminal]
+
+        # Route filter
+        if route and route != "All Routes":
+            schedules = [s for s in schedules if s.get("route") == route]
+
+        if departure_period and departure_period != "All Departure":
+            def is_period(time, period):
+                hour = time.hour if time else 0
+                if period == "Morning":
+                    return 5 <= hour < 12
+                elif period == "Afternoon":
+                    return 12 <= hour < 17
+                elif period == "Evening":
+                    return 17 <= hour <= 23
+                return True
+
+            schedules = [
+                s for s in schedules 
+                if is_period(s["departure_time"], departure_period)
+            ]
+
+        # Status filter
+        if status and status != "All Status":
+            schedules = [s for s in schedules if s.get("status") == status]
+
+    except Exception as e:
+        print("Error:", e)
+        schedules = []
+
+    return render(request, "bustrackr_app/home.html", {
+        "schedules": schedules,
+        "search": search,
+        "terminal": terminal,
+        "route": route,
+        "departure": departure_period,
+        "status": status,
+    })
 
 def about(request):
-    return render(request, "bustrackr_app/user_about_us.html", {
-        "company_name": "BusTrackr",
-        "mission": "Making transport tracking simple, reliable and accessible for all.",
-        "founding_year": 2024,
-        "founders": ["Alice Smith", "Bob Johnson"],
-        "core_values": ["Transparency", "Reliability", "Innovation"],
-    
-    })
+    return render(request, "bustrackr_app/user_about_us.html")
 
 def staff_dashboard_view(request):
     if not request.session.get('staff_id'):
@@ -101,7 +166,7 @@ def staff_dashboard_view(request):
 
     return render(request, 'bustrackr_app/staff_dashboard.html', context)
 
-    
+
 def admin_dashboard_view(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
@@ -114,7 +179,7 @@ def admin_dashboard_view(request):
         bus_resp = supabase.table("bus").select("*").execute()
         bus_data = bus_resp.data if bus_resp else []
         
-        # Calculate Active/Inactive based on inventory
+
         for bus in bus_data:
             if bus.get('status') in ['Active', 'Delayed']:
                 active_buses_count += 1
@@ -128,14 +193,12 @@ def admin_dashboard_view(request):
         sched_resp = supabase.table("bus_schedule").select("*").execute()
         schedules = sched_resp.data if sched_resp else []
     except Exception as e:
-        print(f"Error fetching schedules: {e}")
+        
         schedules = []
 
-    # Calculate Status Counts for the Chart & Legend
-    # Use keys without spaces for easier HTML access
+
     status_counts = {"OnTime": 0, "Delayed": 0, "Cancelled": 0}
-    
-    # Calculate Route Performance for the Table
+
     route_stats = defaultdict(lambda: {"trips": 0, "passengers": 0, "buses": set()})
 
     for sched in schedules:
@@ -148,7 +211,7 @@ def admin_dashboard_view(request):
         elif status == "Cancelled":
             status_counts["Cancelled"] += 1
         
-        # Route Logic
+  
         route = sched.get('route')
         if route:
             route_stats[route]["trips"] += 1
@@ -156,7 +219,7 @@ def admin_dashboard_view(request):
             route_stats[route]["passengers"] += pax
             route_stats[route]["buses"].add(sched.get('bus_id'))
 
-    # Format Route Data for Template
+
     final_route_data = []
     for route_name, data in route_stats.items():
         final_route_data.append({
@@ -166,17 +229,17 @@ def admin_dashboard_view(request):
             "unique_buses": len(data["buses"])
         })
 
-    # Prepare Chart Data Arrays for JS
+  
     chart_labels = ["On Time", "Delayed", "Cancelled"]
     chart_data = [status_counts["OnTime"], status_counts["Delayed"], status_counts["Cancelled"]]
 
     context = {
-        # Inventory Data (Blue Cards)
+  
         "buses": bus_data,
         "active_buses_count": active_buses_count,
         "inactive_buses_count": inactive_buses_count,
         
-        # Report/Chart Data (Graphs & Tables)
+   
         "route_performance": final_route_data,
         "status_counts": status_counts,
         "chart_labels": chart_labels,
@@ -193,13 +256,12 @@ def register_bus(request):
         bus_type = request.POST.get('bus_type')
         capacity = request.POST.get('capacity')
         
-        # Validate required fields
+   
         if not all([plate_number, bus_company, bus_type, capacity]):
             messages.error(request, 'All fields are required!')
             return redirect('admin_dashboard')
         
         try:
-            # Save to Supabase
             data = {
                 "plate_number": plate_number,
                 "bus_company": bus_company,
@@ -217,9 +279,9 @@ def register_bus(request):
         except Exception as e:
             messages.error(request, f'Error registering bus: {str(e)}')
         
-        return redirect('bus_management')  # Redirect to admin dashboard
+        return redirect('bus_management')  
     
-    # If GET request, redirect to admin dashboard
+    
     return redirect('bus_management')
 
 #READ BUS LIST
@@ -337,12 +399,7 @@ def delete_staff_view(request, staff_id):
 
     return redirect("user_management")
 
-#OTHER EXISTING PAGES
-def schedule_management(request):
-    if not (request.session.get('staff_id') or request.session.get('is_admin')):
-        return redirect('staff_login')
-    return render(request, 'bustrackr_app/staff_dashboard_schedule.html')
-
+#SEAT AVAILABILITY
 def seat_availability(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
@@ -353,9 +410,6 @@ def seat_availability(request):
         sched_resp = supabase.table("bus_schedule").select("*").execute()
         bus_resp = supabase.table("bus").select("*").execute()
 
-        print("Schedules response:", sched_resp)
-        print("Buses response:", bus_resp)
-
         schedules = sched_resp.data
         buses = bus_resp.data
 
@@ -364,8 +418,9 @@ def seat_availability(request):
             s["departure_time"] = convert_time_string(s.get("departure_time"))
             s["arrival_time"] = convert_time_string(s.get("arrival_time"))
             
-        print("Schedules fetched:", schedules)
-        print("Buses fetched:", buses)
+        # SORT SCHEDULES ALPHABETICALLY BY ROUTE
+        schedules = sorted(schedules, key=lambda x: x.get("route", "").lower())
+
 
     except Exception as e:
         print("Supabase ERROR:", e)
@@ -376,6 +431,68 @@ def seat_availability(request):
         "buses": buses,
     })
 
+#seat availability update
+def update_seat_availability(request):
+    if request.method == "POST":
+
+        schedule_id = request.POST.get("schedule_id")
+        operation = request.POST.get("operation")
+        count = int(request.POST.get("passenger_count"))
+
+        # Fetch schedule row
+        schedule_resp = supabase.table("bus_schedule").select("*").eq("id", schedule_id).execute()
+        print("Schedule response:", schedule_resp)
+
+        if not schedule_resp.data:
+            messages.error(request, "Schedule not found.")
+            return redirect("seat_availability")
+
+        schedule = schedule_resp.data[0]
+
+        # Fetch bus info
+        bus_id_from_schedule = schedule["bus_id"]
+        bus_resp = supabase.table("bus").select("*").eq("id", bus_id_from_schedule).execute()
+        print("Bus response:", bus_resp)
+
+        bus = bus_resp.data[0]
+        capacity = int(bus["capacity"])
+
+        # Current values
+        available = int(schedule.get("available_seats") or capacity)
+        onboard = int(schedule.get("passengers_onboard") or 0)
+
+        print("Current available:", available)
+        print("Current onboard:", onboard)
+
+        if operation == "subtract" and onboard == 0:
+            messages.warning(request, "Cannot subtract passengers. There are no passengers onboard yet.")
+            return redirect("seat_availability")
+
+        if operation == "add" and count > available:
+            messages.warning(request,
+                f"Cannot add {count} passengers. Only {available} seats are available."
+            )
+            return redirect("seat_availability")
+
+        if operation == "add":
+            new_available = available - count
+            new_onboard = onboard + count
+        else:
+            new_available = available + count
+            new_onboard = onboard - count
+
+
+
+        # Update Supabase
+        update_result = supabase.table("bus_schedule").update({
+            "available_seats": new_available,
+            "passengers_onboard": new_onboard
+        }).eq("id", schedule_id).execute()
+
+        messages.success(request, "Seat availability updated successfully!")
+        return redirect("seat_availability")
+
+    return redirect("seat_availability")
 
 def bus_overview(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
@@ -386,7 +503,7 @@ def reports(request):
     if not (request.session.get('staff_id') or request.session.get('is_admin')):
         return redirect('staff_login')
 
-    # 1. Fetch all schedules
+
     try:
         response = supabase.table("bus_schedule").select("*").execute()
         schedules = response.data if response else []
@@ -394,23 +511,22 @@ def reports(request):
         print(f"Error fetching schedules: {e}")
         schedules = []
 
-    # 2. Initialize Counters (Use specific keys matching your DB status)
+
     status_counts = {
         "On Time": 0,
         "Delayed": 0,
         "Cancelled": 0
     }
-    
-    # 3. Route Logic
+
     route_stats = defaultdict(lambda: {"trips": 0, "passengers": 0, "buses": set()})
 
     for sched in schedules:
-        # Count Status
+
         status = sched.get('status')
         if status in status_counts:
             status_counts[status] += 1
         
-        # Aggregate Route Data
+
         route = sched.get('route')
         if route:
             route_stats[route]["trips"] += 1
@@ -418,7 +534,7 @@ def reports(request):
             route_stats[route]["passengers"] += pax
             route_stats[route]["buses"].add(sched.get('bus_id'))
 
-    # 4. Format Route Data
+
     final_route_data = []
     for route_name, data in route_stats.items():
         final_route_data.append({
@@ -428,7 +544,7 @@ def reports(request):
             "unique_buses": len(data["buses"])
         })
 
-    # 5. Prepare Chart Data
+
     chart_labels = ["On Time", "Delayed", "Cancelled"]
     chart_data = [status_counts["On Time"], status_counts["Delayed"], status_counts["Cancelled"]]
     
@@ -438,29 +554,20 @@ def reports(request):
         "route_performance": final_route_data,
         "chart_labels": chart_labels,
         "chart_data": chart_data,
-        "status_counts": status_counts, # <--- We need this for the legend
+        "status_counts": status_counts, 
         "total_tracked": total_buses_tracked
     }
 
     return render(request, 'bustrackr_app/staff_dashboard_reports.html', context)
 
-""""
-def user_management(request):
-     if not request.session.get('is_admin'):
-        return redirect('staff_login')
-     response = supabase.table("bustrackr_app_staffaccount").select("*").execute()
-     staff_list = response.data  # Supabase returns a list of dicts
-
-     return render(request, "bustrackr_app/admin_user_management.html", {"staff_list": staff_list})
-"""
 def user_management(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
 
     response = supabase.table("bustrackr_app_staffaccount").select("*").execute()
-    staff_list = response.data  # Supabase returns a list of dicts
+    staff_list = response.data  
 
-    # 🔥 Convert Supabase timestamps into real datetime objects
+
     for staff in staff_list:
         created_at = staff.get("created_at")
         if created_at:
@@ -472,17 +579,15 @@ def bus_management(request):
     if not request.session.get('is_admin'):
         return redirect('staff_login')
 
-    # 1. Get ALL buses
+
     buses = Bus.objects.all().order_by('-id')
     total_buses = buses.count()
 
-    # 2. Count Active (Active + Delayed)
     active_buses_count = Bus.objects.filter(
         Q(status='Active') | Q(status='Delayed')
     ).count()
 
-    # 3. Calculate Inactive (Total minus Active)
-    # This guarantees the math always balances
+   
     inactive_buses_count = total_buses - active_buses_count
 
     context = {
@@ -493,7 +598,10 @@ def bus_management(request):
 
     return render(request, 'bustrackr_app/admin_bus_schedule.html', context)
 
-# STAFF DASHBOARD PROTECTED ROUTE
+def contact_views(request):
+    return render(request, "bustrackr_app/user_contact_us.html")
+
+
 @login_required(login_url='staff_login')
 def staff_dashboard(request):
     if not request.session.get('staff_id'):
@@ -538,19 +646,12 @@ def schedule_management(request):
         "statuses": statuses
     })
 
-
-
-
-# POSTGREST_URL = "http://127.0.0.1:8000/bus_schedule"
-
 def create_schedule(request):
     if request.method == "POST":
         data = request.POST
 
-        # STEP 1 — Get bus_id from user input
         bus_id = int(data.get("bus_id"))
 
-        # STEP 2 — Fetch bus capacity from Supabase
         try:
             bus_resp = supabase.table("bus").select("capacity").eq("id", bus_id).execute()
             bus = bus_resp.data[0]
@@ -559,7 +660,6 @@ def create_schedule(request):
             messages.error(request, f"Could not load bus capacity: {e}")
             return redirect("schedule_management")
 
-        # STEP 3 — Build the schedule record
         payload = {
             "id": str(uuid.uuid4()),
             "bus_id": bus_id,
@@ -568,7 +668,6 @@ def create_schedule(request):
             "arrival_time": data.get("arrival_time"),
             "status": data.get("status"),
 
-            # ALWAYS set available_seats = capacity by default
             "available_seats": capacity,
             "passengers_onboard": 0
         }
@@ -582,11 +681,10 @@ def create_schedule(request):
 
         return redirect("schedule_management")
 
-
 def edit_schedule(request, id):
     if request.method == "POST":
-        # --- LOGIC: Only update specific fields ---
-        # We purposely EXCLUDE 'bus_id' and 'route' from this dictionary
+        # LOGIC: Only update specific fields (Time & Status)
+        # We DO NOT include 'bus_id' or 'route' here
         updated = {
             "departure_time": request.POST.get("departure_time"),
             "arrival_time": request.POST.get("arrival_time"),
@@ -601,14 +699,10 @@ def edit_schedule(request, id):
 
     return redirect("schedule_management")
 
-
 def delete_schedule(request, id):
     supabase.table("bus_schedule").delete().eq("id", id).execute()
     messages.success(request, "Schedule deleted successfully!")
     return redirect("schedule_management")
-
-# time conversion helper
-from datetime import datetime
 
 def convert_time_string(value):
     if isinstance(value, str):
@@ -618,71 +712,7 @@ def convert_time_string(value):
             return value
     return value
 
-#seat availability update
-def update_seat_availability(request):
-    if request.method == "POST":
 
-        schedule_id = request.POST.get("schedule_id")
-        operation = request.POST.get("operation")
-        count = int(request.POST.get("passenger_count"))
-
-        print("\n--- DEBUG: START UPDATE ---")
-        print("Received schedule_id:", schedule_id)
-        print("Operation:", operation)
-        print("Passenger count:", count)
-
-        # Fetch schedule row
-        schedule_resp = supabase.table("bus_schedule").select("*").eq("id", schedule_id).execute()
-        print("Schedule response:", schedule_resp)
-
-        if not schedule_resp.data:
-            messages.error(request, "Schedule not found.")
-            return redirect("seat_availability")
-
-        schedule = schedule_resp.data[0]
-
-        # Fetch bus info
-        bus_id_from_schedule = schedule["bus_id"]
-        bus_resp = supabase.table("bus").select("*").eq("id", bus_id_from_schedule).execute()
-        print("Bus response:", bus_resp)
-
-        bus = bus_resp.data[0]
-        capacity = int(bus["capacity"])
-
-        # Current values
-        available = int(schedule.get("available_seats") or capacity)
-        onboard = int(schedule.get("passengers_onboard") or 0)
-
-        print("Current available:", available)
-        print("Current onboard:", onboard)
-
-        # Perform calculation
-        if operation == "add":
-            # adding passengers
-            new_available = max(0, available - count)
-            new_onboard = min(capacity, onboard + count)
-
-        else:
-            # subtracting passengers
-            new_available = min(capacity, available + count)
-            new_onboard = max(0, onboard - count)
-
-        print("New available:", new_available)
-        print("New onboard:", new_onboard)
-
-        # Update Supabase
-        update_result = supabase.table("bus_schedule").update({
-            "available_seats": new_available,
-            "passengers_onboard": new_onboard
-        }).eq("id", schedule_id).execute()
-
-        print("Update result:", update_result)
-        print("--- DEBUG END ---\n")
-
-        messages.success(request, "Seat availability updated!")
-        return redirect("seat_availability")
-
-    return redirect("seat_availability")
 
 
 

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/output.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/dashboard_common.css' %}">
   <link rel="stylesheet" href="{% static 'bustrackr_app/css/user_management.css' %}">
+  <link rel="stylesheet" href="{% static 'bustrackr_app/css/alerts.css' %}">
 
 
 </head>
@@ -21,48 +22,22 @@
 
   <!-- Sidebar -->
   {% include 'components/sidebar.html' %}
-  {% include 'components/alerts.html' %}
-
+  
   <!-- Main Content -->
   <div class="main-content p-4">
+    {% include 'components/alerts.html' %}
     {% include 'components/add_staff.html' %}
     {% include 'components/edit_staff.html' %}
     {% include 'components/delete_staff.html' %}
-
-
-    <!-- Top Bar -->
-    <div class="top-bar mb-4 d-flex justify-content-between align-items-center">
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="terminalDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Cebu South Bus Terminal
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="terminalDropdown">
-          <li><a class="dropdown-item" href="#">Cebu North Bus Terminal</a></li>
-          <li><a class="dropdown-item" href="#">Cebu South Bus Terminal</a></li>
-        </ul>
-      </div>
-
-      <div class="search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" class="form-control" placeholder="Search user...">
-      </div>
-    </div>
-
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="page-title mb-0">User Management</h4>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_staff">
-        <i class="bi bi-person-plus me-1"></i> Add Staff
-      </button>
-    </div>
 
     <!-- User Table -->
     <div class="card p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-semibold mb-0 text-primary">Active Users</h5>
         <div>
-          <button class="btn btn-light btn-sm me-2"><i class="bi bi-funnel"></i> Filter</button>
-          <button class="btn btn-light btn-sm"><i class="bi bi-download"></i> Export</button>
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_staff">
+            <i class="bi bi-person-plus me-1"></i> Add Staff
+          </button>
         </div>
       </div>
 
@@ -120,6 +95,7 @@
     crossorigin="anonymous"></script>
 <script src="{% static 'bustrackr_app/js/edit_staff.js' %}"></script>
 <script src="{% static 'bustrackr_app/js/delete_staff.js' %}"></script>
+<script src="{% static 'bustrackr_app/js/alerts.js' %}"></script>
 
 </body>
 </html>
